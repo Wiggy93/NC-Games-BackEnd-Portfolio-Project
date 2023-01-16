@@ -23,26 +23,33 @@ describe('GET commands', () => {
             expect(response.body.Categories[0]).toHaveProperty("description")
         })
     });
-})
     
-//     test('200 status: GET /api/reviews return array of objects containing relevant properties ', () => {
-//         return request(app)
-//         .get("/api/reviews")
-//         .expect(200)
-//         .then(({body}) => {
-//             expect(Array.isArray(body.Reviews)).toBe(true);
-//             expect(body.Reviews).toHaveProperty("owner");
-//             expect(body.Reviews).toHaveProperty("title");
-//             expect(body.Reviews).toHaveProperty("review_id");
-//             expect(body.Reviews).toHaveProperty("category");
-//             expect(body.Reviews).toHaveProperty("review_img_url");
-//             expect(body.Reviews).toHaveProperty("created_at");
-//             expect(body.Reviews).toHaveProperty("votes");
-//             expect(body.Reviews).toHaveProperty("designer");
-//             expect(body.Reviews).toHaveProperty("comment_count");
-//         })
-//     });
-// })
+    // test('200 status: GET /api/reviews return array of objects containing relevant properties ', () => {
+    //     return request(app)
+    //     .get("/api/reviews")
+    //     .expect(200)
+    //     .then(({body}) => {
+    //         const reviews = body.reviews;
+
+    //         expect(Array.isArray(reviews)).toBe(true);
+    //         expect(reviews).toHaveLength(13);
+    //         reviews.forEach((review) => {
+    //             expect(review).toHaveProperty("owner");
+    //             expect(review).toHaveProperty("title");
+    //             expect(review).toHaveProperty("review_id");
+    //             expect(review).toHaveProperty("category");
+    //             expect(review).toHaveProperty("review_img_url");
+    //             expect(review).toHaveProperty("created_at");
+    //             expect(review).toHaveProperty("votes");
+    //             expect(review).toHaveProperty("designer");
+    //             expect(review).toHaveProperty("comment_count");
+
+    //         })
+
+    //     })
+    });
+})
+
 
 
 describe('Error handling', () => {

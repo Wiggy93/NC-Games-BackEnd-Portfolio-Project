@@ -1,4 +1,5 @@
-const {fetchCategories} = require("../models/app.model")
+//const { fetchCategories, fetchReviews }  = require("../models/app.model")
+const {fetchCategories, fetchReviews } =  require("../models/app.model")
 
 const getCategory = (request, response, next) => {
     fetchCategories().then((categoryArr) => {
@@ -8,8 +9,8 @@ const getCategory = (request, response, next) => {
 }
 
 const getReviews = ((request, response, next) => {
-    fetchReviews().then((reviewArr) => {
-        response.status(200).send({Reviews : reviewArr})
+    fetchReviews().then((reviews) => {
+        response.status(200).send({reviews})
     })
 })
 
