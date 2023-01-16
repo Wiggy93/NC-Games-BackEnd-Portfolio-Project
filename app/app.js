@@ -7,7 +7,7 @@ app.use(express.json())
 app.get("/api/categories", getCategory)
 
 
-app.get('*', (request, response) => {
+app.all('*', (request, response) => {
     response.status(404).send({"message" : "Invalid path provided - please try again"})
 });
 
