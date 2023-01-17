@@ -16,8 +16,7 @@ const fetchReviews = (request, response) => {
     ORDER BY created_at DESC;`;
     
     return db.query(reviewCommentCount).then((result) => {
-        console.log(result.rows)
-            return result.rows;
+        return result.rows;
     })
 }
 

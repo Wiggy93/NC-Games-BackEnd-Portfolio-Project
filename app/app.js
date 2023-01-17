@@ -2,8 +2,6 @@ const express = require("express");
 const app = express();
 const { getCategory, getReviews} = require("../controllers/app.controller")
 
-app.use(express.json())
-
 app.get("/api/categories", getCategory)
 
 app.get("/api/reviews", getReviews)
