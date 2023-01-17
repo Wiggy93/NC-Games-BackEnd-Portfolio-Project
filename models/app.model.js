@@ -6,4 +6,18 @@ const fetchCategories = (request, response) => {
     })
 }
 
-module.exports = { fetchCategories }
+const fetchReviews = (request, response) => {
+  
+    const reviewCommentCount = 
+    `SELECT reviews.*, COUNT (comments.comment_id) AS comment_count  
+    FROM reviews 
+    LEFT JOIN comments ON comments.review_id=reviews.review_id 
+    GROUP BY reviews.review_id
+    ORDER BY created_at DESC;`;
+    
+    return db.query(reviewCommentCount).then((result) => {
+        return result.rows;
+    })
+}
+
+module.exports = { fetchCategories, fetchReviews }
