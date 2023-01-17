@@ -54,9 +54,28 @@ describe('GET commands', () => {
             expect(reviews).toBeSortedBy("created_at", {descending : true,});
             
             expect(reviews[4].comment_count).toBe("3"); //test needs updating if testData is changed. NB app express exports a JSON, hence expecting 3 as "3"
+        })
+    });
 
+    test('200 status: should return the comments for a given review_id, sorterd in ascending order', () => {
+        return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({body})=>{
+            const comments = body.comments;
             
-          
+            expect(Array.isArray(comments)).toBe(true);
+            expect(comments).toHaveLength(3);
+            comments.forEach((comment)=>{
+                expect(comment).toHaveProperty("comment_id");
+                expect(comment).toHaveProperty("votes");
+                expect(comment).toHaveProperty("created_at");
+                expect(comment).toHaveProperty("author");
+                expect(comment).toHaveProperty("body");
+                expect(comment).toHaveProperty("review_id");
+            });
+            expect(comments).toBeSortedBy("created_at");
+
         })
     });
 
