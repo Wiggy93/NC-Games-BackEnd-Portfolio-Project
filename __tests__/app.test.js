@@ -62,7 +62,24 @@ describe('GET commands', () => {
 
 })
 
+describe('POST commands', () => {
+    test("POST to /api/reivews/:review_id/comments takes a username and body in the request, responding with the posted comment", () =>{
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+            username: "mallionaire",
+            body: "One of the classics!"
+        })
+        .expect(201)
+        .then(({body})=>{
+          const newComment = body.addedComment[0];
 
+          expect(newComment.body).toBe("One of the classics!")
+          expect(newComment.author).toBe("mallionaire")
+          expect(newComment.review_id).toBe(1);
+        })
+    })
+});
 
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
