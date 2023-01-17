@@ -83,13 +83,6 @@ describe('GET commands', () => {
         })
 })
 
-describe('/api/reviews', () => {
-   
-   
-   
-    
-    });
-
 
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
@@ -100,5 +93,23 @@ describe('Error handling', () => {
          expect(body).toEqual({"message" : "Invalid path provided - please try again"});
         });
     });
+
+    // test('404: GET followed by invalid review datatype should return a message', () => {
+    //     return request(app)
+    //     .get("/api/reviews/bananas")
+    //     .expect(404)
+    //     .then((response)=>{
+    //         expect(response.something).toEqual("invalid id datatype")
+    //     })
+    // });
+
+    // test('400: GET follow by invalid review id should return a message', () => {
+    //     return request(app)
+    //     .get("/api/reviews/99999")
+    //     .expect(400)
+    //     .then((response)=>{
+    //         expect(response.something).toEqual("id does not exist")
+    //     })
+    // });
 });
 
