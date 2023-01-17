@@ -24,30 +24,37 @@ describe('GET commands', () => {
         })
     });
     
-    // test('200 status: GET /api/reviews return array of objects containing relevant properties ', () => {
-    //     return request(app)
-    //     .get("/api/reviews")
-    //     .expect(200)
-    //     .then(({body}) => {
-    //         const reviews = body.reviews;
+    test('200 status: GET /api/reviews return array of objects containing relevant properties, sorted by date in descending order by default', () => {
+        return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
+            console.log(reviews)
 
-    //         expect(Array.isArray(reviews)).toBe(true);
-    //         expect(reviews).toHaveLength(13);
-    //         reviews.forEach((review) => {
-    //             expect(review).toHaveProperty("owner");
-    //             expect(review).toHaveProperty("title");
-    //             expect(review).toHaveProperty("review_id");
-    //             expect(review).toHaveProperty("category");
-    //             expect(review).toHaveProperty("review_img_url");
-    //             expect(review).toHaveProperty("created_at");
-    //             expect(review).toHaveProperty("votes");
-    //             expect(review).toHaveProperty("designer");
-    //             expect(review).toHaveProperty("comment_count");
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews).toHaveLength(13);
+            reviews.forEach((review) => {
+                expect(review).toHaveProperty("owner");
+                expect(review).toHaveProperty("title");
+                expect(review).toHaveProperty("review_id");
+                expect(review).toHaveProperty("category");
+                expect(review).toHaveProperty("review_img_url");
+                expect(review).toHaveProperty("created_at");
+                expect(review).toHaveProperty("votes");
+                expect(review).toHaveProperty("designer");
+                expect(review).toHaveProperty("comment_count");
+            })
+            
+            expect(reviews).toBeSortedBy("created_at", {descending : true,});
+            
+            expect(reviews[4].comment_count).toBe("3"); //test needs updating if testData is changed. NB app express exports a JSON, hence expecting 3 as "3"
 
-    //         })
+            
+          
+        })
+    });
 
-    //     })
-    // });
 })
 
 

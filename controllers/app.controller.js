@@ -1,4 +1,3 @@
-//const { fetchCategories, fetchReviews }  = require("../models/app.model")
 const {fetchCategories, fetchReviews } =  require("../models/app.model")
 
 const getCategory = (request, response, next) => {
