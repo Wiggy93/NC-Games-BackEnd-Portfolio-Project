@@ -30,6 +30,15 @@ describe('GET /api/categories', () => {
     });
 })
 
+// describe('/api/reviews', () => {
+//     test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
+//         return request(app)
+//         .get("/api/return/2")
+//         .expect(200)
+//         .then()
+//     });
+// });
+
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
       return request(app)
