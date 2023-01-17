@@ -24,29 +24,29 @@ describe('GET commands', () => {
         })
     });
     
-    // test('200 status: GET /api/reviews return array of objects containing relevant properties ', () => {
-    //     return request(app)
-    //     .get("/api/reviews")
-    //     .expect(200)
-    //     .then(({body}) => {
-    //         const reviews = body.reviews;
+    test('200 status: GET /api/reviews return array of objects containing relevant properties ', () => {
+        return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({body}) => {
+            const reviews = body.reviews;
 
-    //         expect(Array.isArray(reviews)).toBe(true);
-    //         expect(reviews).toHaveLength(13);
-    //         reviews.forEach((review) => {
-    //             expect(review).toHaveProperty("owner");
-    //             expect(review).toHaveProperty("title");
-    //             expect(review).toHaveProperty("review_id");
-    //             expect(review).toHaveProperty("category");
-    //             expect(review).toHaveProperty("review_img_url");
-    //             expect(review).toHaveProperty("created_at");
-    //             expect(review).toHaveProperty("votes");
-    //             expect(review).toHaveProperty("designer");
-    //             expect(review).toHaveProperty("comment_count");
+            expect(Array.isArray(reviews)).toBe(true);
+            expect(reviews).toHaveLength(13);
+            reviews.forEach((review) => {
+                expect(review).toHaveProperty("owner");
+                expect(review).toHaveProperty("title");
+                expect(review).toHaveProperty("review_id");
+                expect(review).toHaveProperty("category");
+                expect(review).toHaveProperty("review_img_url");
+                expect(review).toHaveProperty("created_at");
+                expect(review).toHaveProperty("votes");
+                expect(review).toHaveProperty("designer");
+                expect(review).toHaveProperty("comment_count");
 
-    //         })
+            })
 
-    //     })
+        })
     });
 })
 
