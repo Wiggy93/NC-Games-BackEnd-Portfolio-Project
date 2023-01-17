@@ -1,4 +1,5 @@
-const {fetchCategories, fetchReviews } =  require("../models/app.model")
+const { request, response } = require("../app/app")
+const {fetchCategories, fetchReviews, fetchReviewById } =  require("../models/app.model")
 
 const getCategory = (request, response, next) => {
     fetchCategories().then((categories) => {
@@ -9,9 +10,8 @@ const getCategory = (request, response, next) => {
     })
 }
 
-const getReviews = ((request, response, next) => {
-    const { review_id } = request.params;
-    fetchReviews(review_id).then((reviews) => {
+const getReviews = ((request, response, next) => {    
+    fetchReviews().then((reviews) => {
         response.status(200).send({reviews})
     })
     .catch((err) => {
@@ -19,4 +19,11 @@ const getReviews = ((request, response, next) => {
     })
 })
 
-module.exports = { getCategory, getReviews }
+const getReviewById = ((request, response, next) => {
+    const { reviewID } = request.params;
+    fetchReviewById(reviewID).then((reviewObj)=>{
+        response.status(200).send({reviewObj})
+    })
+})
+
+module.exports = { getCategory, getReviews, getReviewById }
