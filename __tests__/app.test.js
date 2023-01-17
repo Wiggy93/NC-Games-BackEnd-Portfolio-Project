@@ -20,6 +20,7 @@ describe('GET commands', () => {
         .then((response) => {
             const categories = response.body.categories;
             expect(Array.isArray(categories)).toBe(true);
+            expect(categories).toHaveLength(4)
             categories.forEach((category=>{
                 expect(category).toHaveProperty("slug");
                 expect(category).toHaveProperty("description")
