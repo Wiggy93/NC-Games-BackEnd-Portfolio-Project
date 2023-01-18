@@ -68,15 +68,17 @@ describe('POST commands', () => {
         .post("/api/reviews/1/comments")
         .send({
             username: "mallionaire",
-            body: "One of the classics!"
+            body: "One of the classics!",
         })
         .expect(201)
         .then(({body})=>{
-          const newComment = body.addedComment[0];
-
-          expect(newComment.body).toBe("One of the classics!")
-          expect(newComment.author).toBe("mallionaire")
-          expect(newComment.review_id).toBe(1);
+          const newComment = body.addedComment;
+        
+          expect(newComment).toHaveLength(1)
+          expect(newComment[0].body).toBe("One of the classics!")
+          expect(newComment[0].author).toBe("mallionaire")
+          expect(newComment[0].review_id).toBe(1);
+          expect(newComment[0].votes).toBe(0)
         })
     })
 });
@@ -90,4 +92,57 @@ describe('Error handling', () => {
          expect(body).toEqual({"message" : "Invalid path provided - please try again"});
         });
     });
+
+    test('400 status: POST a comment to invalid review datatype should return a message ', () => {
+        return request(app)
+        .post("/api/reviews/bananas/comments")
+        .send({
+            username: "mallionaire",
+            body: "This body shouldn't be here!",
+        })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Bad Request")
+        })
+    });
+
+    test('404 status: POST a comment to a review id that doesn\' exist should return a message', () => {
+        return request(app)
+        .post("/api/reviews/999/comments")
+        .send({
+            username: "mallionaire",
+            body: "This body shouldn't be here!",
+        })
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("Review ID Not Found")
+        })
+    });
+
+    test('400 status: POST a malformed request body should return a message ', () => {
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({  })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Missing required fields in comment (username and/or comment)")
+        })
+    });
+
+    // test.only('400 status: POST a request body with invalid username ie not on the users list ', () => {
+    //     return request(app)
+    //     .post("/api/reviews/1/comments")
+    //     .send({
+    //         username: "theAlexWigMeisterGeneral",
+    //         body : "testing"
+
+    //     })
+    //     .expect(400)
+    //     .then(({body})=>{
+    //         console.log(body,"<<test")
+    //         expect(body.message).toEqual("Invalid username")
+    //     })
+    // });
+
+    //trying to find username on users table but not - how to get around it
 });

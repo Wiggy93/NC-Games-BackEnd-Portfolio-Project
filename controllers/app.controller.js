@@ -19,13 +19,16 @@ const getReviews = ((request, response, next) => {
     })
 })
 
-const addComments = ((request, response) =>{
+const addComments = ((request, response, next) =>{
     const {body} = request;
-   
     const { reviewID } =  request.params;
+    
 
     writeComment(reviewID, body).then((newComment)=>{
         response.status(201).send({addedComment : newComment})
+    })
+    .catch((err)=>{
+        next(err)
     })
 })
 
