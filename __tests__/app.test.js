@@ -69,16 +69,21 @@ describe('GET commands', () => {
     
                 expect(typeof reviewObj).toBe("object");
                 expect(Array.isArray(reviewObj)).toBe(false);
-                
-                expect(reviewObj).toHaveProperty("review_id");
-                expect(reviewObj).toHaveProperty("title");
-                expect(reviewObj).toHaveProperty("review_body");
-                expect(reviewObj).toHaveProperty("designer");
-                expect(reviewObj).toHaveProperty("review_img_url");
-                expect(reviewObj).toHaveProperty("votes");
-                expect(reviewObj).toHaveProperty("category");
-                expect(reviewObj).toHaveProperty("owner");
-                expect(reviewObj).toHaveProperty("created_at");
+
+                expect(reviewObj).toEqual(expect.objectContaining(
+                    {
+                    "review_id" : expect.any(Number),
+                    "title" : expect.any(String),
+                    "review_body" : expect.any(String),
+                    "designer" : expect.any(String),
+                    "review_img_url" : expect.any(String),
+                    "votes" : expect.any(Number),
+                    "category" : expect.any(String),
+                    "owner" : expect.any(String),
+                    "created_at" : expect.any(String)
+
+                }
+                ))
             })
         })
 })
@@ -108,7 +113,7 @@ describe('Error handling', () => {
         .get("/api/reviews/99999")
         .expect(404)
         .then(({body})=>{
-            expect(body.message).toEqual("id does not exist")
+            expect(body.message).toEqual("review id does not exist")
         });
     });
 })
