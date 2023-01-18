@@ -13,18 +13,19 @@ afterAll(() => {
 })
 
 describe('GET commands', () => {
-     test('/api/categories should return 200 status and array of categories ', () => {
+     test('200 status: GET /api/categories should return an array of categories ', () => {
         return request(app)
         .get("/api/categories")
         .expect(200)
         .then((response) => {
             const categories = response.body.categories
             
-            expect(categories).toHaveLength(4);
             expect(Array.isArray(categories)).toBe(true);
-            categories.forEach((category => {
+            expect(categories).toHaveLength(4)
+            categories.forEach((category=>{
                 expect(category).toHaveProperty("slug");
-                expect(category).toHaveProperty("description");
+                expect(category).toHaveProperty("description")
+
             }))
         })
     });

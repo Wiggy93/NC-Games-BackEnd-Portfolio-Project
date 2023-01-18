@@ -11,6 +11,7 @@ app.get("/api/reviews",getReviews);
 app.get("/api/reviews/:reviewID", getReviewById);
 
 
+app.get("/api/reviews", getReviews)
 
 app.all('*', (request, response) => {
     response.status(404).send({message : "Invalid path provided - please try again"})
