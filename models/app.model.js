@@ -1,12 +1,13 @@
 const db = require("../db/connection")
 
+
 const fetchCategories = (request, response) => {
-    return db.query(`SELECT * FROM categories`).then((result) => {
+    return db.query(`SELECT * FROM categories;`).then((result) => {
         return result.rows;
     })
 }
 
-const fetchReviews = (request, response) => {
+const fetchReviews = () => {
   
     const reviewCommentCount = 
     `SELECT reviews.*, COUNT (comments.comment_id) AS comment_count  
@@ -20,4 +21,15 @@ const fetchReviews = (request, response) => {
     })
 }
 
-module.exports = { fetchCategories, fetchReviews }
+const fetchReviewById = (reviewId) => {
+     return db.query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewId]).then((result) => {
+        if(result.rowCount === 0){
+            return Promise.reject({status : 404, message : "review id does not exist"})
+        } else {
+            return result.rows;
+        }
+    })
+   
+}
+
+module.exports = { fetchCategories, fetchReviews , fetchReviewById}
