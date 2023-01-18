@@ -31,7 +31,6 @@ const writeComment = (reviewID, body) =>{
     return db.query(queryStr,[body.username, body.body, reviewID])
     
     .then((result)=>{
-            console.log(result)
             return result.rows;
         
     })
