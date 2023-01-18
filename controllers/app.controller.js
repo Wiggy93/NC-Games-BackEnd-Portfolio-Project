@@ -24,6 +24,9 @@ const getReviewById = ((request, response, next) => {
     fetchReviewById(reviewID).then((reviewObj)=>{
         response.status(200).send({reviewObj})
     })
+    .catch((err)=>{
+        next(err)
+    })
 })
 
 module.exports = { getCategory, getReviews, getReviewById }
