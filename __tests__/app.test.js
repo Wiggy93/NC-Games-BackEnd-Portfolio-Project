@@ -129,20 +129,4 @@ describe('Error handling', () => {
         })
     });
 
-    // test.only('400 status: POST a request body with invalid username ie not on the users list ', () => {
-    //     return request(app)
-    //     .post("/api/reviews/1/comments")
-    //     .send({
-    //         username: "theAlexWigMeisterGeneral",
-    //         body : "testing"
-
-    //     })
-    //     .expect(400)
-    //     .then(({body})=>{
-    //         console.log(body,"<<test")
-    //         expect(body.message).toEqual("Invalid username")
-    //     })
-    // });
-
-    //trying to find username on users table but not - how to get around it
 });
