@@ -18,7 +18,8 @@ describe('GET commands', () => {
         .get("/api/categories")
         .expect(200)
         .then((response) => {
-            const categories = response.body.categories;
+            const categories = response.body.categories
+            
             expect(Array.isArray(categories)).toBe(true);
             expect(categories).toHaveLength(4)
             categories.forEach((category=>{
@@ -28,7 +29,7 @@ describe('GET commands', () => {
             }))
         })
     });
-    
+
     test('200 status: GET /api/reviews return array of objects containing relevant properties, sorted by date in descending order by default', () => {
         return request(app)
         .get("/api/reviews")
@@ -79,8 +80,33 @@ describe('GET commands', () => {
         })
     });
 
-})
+    test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
+        return request(app)
+        .get("/api/reviews/2")
+        .expect(200)
+        .then(({body}) =>{
+                const reviewObj = body.reviewObj[0]
+    
+                expect(typeof reviewObj).toBe("object");
+                expect(Array.isArray(reviewObj)).toBe(false);
 
+                expect(reviewObj).toEqual(expect.objectContaining(
+                    {
+                    "review_id" : expect.any(Number),
+                    "title" : expect.any(String),
+                    "review_body" : expect.any(String),
+                    "designer" : expect.any(String),
+                    "review_img_url" : expect.any(String),
+                    "votes" : expect.any(Number),
+                    "category" : expect.any(String),
+                    "owner" : expect.any(String),
+                    "created_at" : expect.any(String)
+
+                }
+                ))
+            })
+        })
+})
 
 
 describe('Error handling', () => {
@@ -93,15 +119,25 @@ describe('Error handling', () => {
         });
     });
 
+    test('404: GET followed by invalid review datatype should return a message', () => {
+        return request(app)
+        .get("/api/reviews/bananas")
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Bad Request")
+        })
+    });
+
     test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
         return request(app)
         .get("/api/reviews/bananas/comments")
         .expect(400)
         .then(({body})=>{
-        
             expect(body.message).toEqual("Bad Request")
         })
-    });
+    })
+        
+    
 
     test('404: GET follow by a comment on an invalid review id ie resource that doesn\'t exist should return a message', () => {
         return request(app)
@@ -111,5 +147,14 @@ describe('Error handling', () => {
             expect(body.message).toEqual("id does not exist")
         });
     });
-})
 
+
+    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+        return request(app)
+        .get("/api/reviews/99999")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("review id does not exist")
+        });
+    });
+})
