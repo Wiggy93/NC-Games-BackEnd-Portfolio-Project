@@ -14,7 +14,7 @@ app.all('*', (request, response) => {
 
 app.use((err, req, res, next)=>{
     if(err.status && err.message){
-        res.status(err.status).send({message : err.message});   //catching error where correct format but (review) id doesn't exist 
+        res.status(err.status).send({message : err.message});   
     } else {
         next(err);
     }

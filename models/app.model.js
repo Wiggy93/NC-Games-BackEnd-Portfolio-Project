@@ -32,12 +32,6 @@ const getCommentsById = (reviewId) =>{
            return result.rows;
 
        }
-        // if (result.rows.length === 0){
-        //  idNotExist(comments, review_id, reviewId)
-        // } else {
-            //return result.rows
-        //}
-        //come back to if time to refactor if id exists into reusable code
     })
 }
 
