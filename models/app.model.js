@@ -1,4 +1,7 @@
 const db = require("../db/connection")
+//const {idNotExist} = require("../db/seeds/utils")
+
+
 
 const fetchCategories = (request, response) => {
     return db.query(`SELECT * FROM categories`).then((result) => {
@@ -23,7 +26,18 @@ const fetchReviews = (request, response) => {
 const getCommentsById = (reviewId) =>{
     return db.query(`SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`, [reviewId])
     .then((result)=>{
-        return result.rows;
+       if (result.rowCount === 0) {
+        return Promise.reject({status : 404, message : "id does not exist"})
+       } else {
+           return result.rows;
+
+       }
+        // if (result.rows.length === 0){
+        //  idNotExist(comments, review_id, reviewId)
+        // } else {
+            //return result.rows
+        //}
+        //come back to if time to refactor if id exists into reusable code
     })
 }
 

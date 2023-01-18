@@ -92,4 +92,24 @@ describe('Error handling', () => {
          expect(body).toEqual({"message" : "Invalid path provided - please try again"});
         });
     });
-});
+
+    test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
+        return request(app)
+        .get("/api/reviews/bananas/comments")
+        .expect(400)
+        .then(({body})=>{
+        
+            expect(body.message).toEqual("Bad Request")
+        })
+    });
+
+    test('404: GET follow by a comment on an invalid review id ie resource that doesn\'t exist should return a message', () => {
+        return request(app)
+        .get("/api/reviews/99999/comments")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("id does not exist")
+        });
+    });
+})
+
