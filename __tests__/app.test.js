@@ -57,29 +57,7 @@ describe('GET commands', () => {
             expect(reviews[4].comment_count).toBe("3"); //test needs updating if testData is changed. NB app express exports a JSON, hence expecting 3 as "3"
         })
     });
-
-    test('200 status: should return the comments for a given review_id, sorterd in ascending order', () => {
-        return request(app)
-        .get("/api/reviews/2/comments")
-        .expect(200)
-        .then(({body})=>{
-            const comments = body.comments;
-            
-            expect(Array.isArray(comments)).toBe(true);
-            expect(comments).toHaveLength(3);
-            comments.forEach((comment)=>{
-                expect(comment).toHaveProperty("comment_id");
-                expect(comment).toHaveProperty("votes");
-                expect(comment).toHaveProperty("created_at");
-                expect(comment).toHaveProperty("author");
-                expect(comment).toHaveProperty("body");
-                expect(comment).toHaveProperty("review_id");
-            });
-            expect(comments).toBeSortedBy("created_at");
-
-        })
-    });
-
+    
     test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
         return request(app)
         .get("/api/reviews/2")
@@ -106,8 +84,45 @@ describe('GET commands', () => {
                 ))
             })
         })
-})
+    })
 
+    test('200 status: should return the comments for a given review_id, sorterd in ascending order', () => {
+        return request(app)
+        .get("/api/reviews/2/comments")
+        .expect(200)
+        .then(({body})=>{
+            const comments = body.comments;
+            
+            expect(Array.isArray(comments)).toBe(true);
+            expect(comments).toHaveLength(3);
+            comments.forEach((comment)=>{
+                expect(comment).toHaveProperty("comment_id");
+                expect(comment).toHaveProperty("votes");
+                expect(comment).toHaveProperty("created_at");
+                expect(comment).toHaveProperty("author");
+                expect(comment).toHaveProperty("body");
+                expect(comment).toHaveProperty("review_id");
+            });
+            expect(comments).toBeSortedBy("created_at");
+
+        })
+    });
+
+    test("200 status: GET /api/users should return array of objects with user info", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const userArr = body.allUsers;
+          expect(Array.isArray(userArr)).toBe(true);
+          expect(userArr).toHaveLength(4);
+          userArr.forEach((user) => {
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("name");
+            expect(user).toHaveProperty("avatar_url");
+          });
+        });
+    });
 
 
 
