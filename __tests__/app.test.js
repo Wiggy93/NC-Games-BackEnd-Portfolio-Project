@@ -116,7 +116,7 @@ describe('Error handling', () => {
         })
         .expect(404)
         .then(({body})=>{
-            expect(body.message).toEqual("Review ID Not Found")
+            expect(body.message).toEqual("Not Found")
         })
     });
 
@@ -130,17 +130,17 @@ describe('Error handling', () => {
         })
     });
 
-    // test.only('404 status: POST using a username not in the database should return an error message', () => {
-    //     return request(app)
-    //     .post("/api/reviews/1/comments")
-    //     .send({
-    //         username: "Alex",
-    //         body: "This body shouldn't be here!",
-    //     })
-    //     .expect(404)
-    //     .then(({body})=>{
-    //         expect(body.message).toEqual("User doesn't exist")
-    //     })
-    // });
+    test('404 status: POST using a username not in the database should return an error message', () => {
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+            username: "Alex",
+            body: "This body shouldn't be here!",
+        })
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("Not Found")
+        })
+    });
 
 });

@@ -1,12 +1,13 @@
 const db = require("../db/connection")
 
+
 const fetchCategories = (request, response) => {
-    return db.query(`SELECT * FROM categories`).then((result) => {
+    return db.query(`SELECT * FROM categories;`).then((result) => {
         return result.rows;
     })
 }
 
-const fetchReviews = (request, response) => {
+const fetchReviews = () => {
   
     const reviewCommentCount = 
     `SELECT reviews.*, COUNT (comments.comment_id) AS comment_count  
@@ -20,7 +21,51 @@ const fetchReviews = (request, response) => {
     })
 }
 
-//working on sql script to input stuff correctly
+
+const fetchReviewById = (reviewId) => {
+     return db.query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewId]).then((result) => {
+       
+       
+        if(result.rowCount === 0){
+            return Promise.reject({status : 404, message : "review id does not exist"})
+        } else {
+            return result.rows;
+        }
+    })
+   
+}
+
+const getCommentsById = (reviewId) =>{
+    return db.query(`SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`, [reviewId])
+    .then((result)=>{
+       if (result.rowCount === 0) {
+        return Promise.reject({status : 404, message : "id does not exist"})
+       } else {
+           return result.rows;
+
+       }
+    })
+}
+
+
+const updateVotes = ((reviewId, body)=>{
+   const queryStr = 
+
+    `UPDATE reviews 
+    SET votes = votes + $1
+    WHERE review_id IN   
+    (SELECT review_id FROM reviews WHERE review_id=$2)
+    RETURNING*;`
+
+    return db.query(queryStr, [body.inc_votes, reviewId]).then((result)=>{
+        if (result.rowCount === 0) {
+            return Promise.reject({status : 404, message : "review id does not exist"})
+        } else {
+            return result.rows[0]
+           }
+    })
+})
+
 const writeComment = (reviewID, body) =>{
     
     const queryStr = 
@@ -28,8 +73,6 @@ const writeComment = (reviewID, body) =>{
     VALUES ($1, $2, $3)
     
     RETURNING*;`
-
-//WHERE EXISTS (SELECT * FROM users WHERE users.username=$1)
 
     return db.query(queryStr,[body.username, body.body, reviewID])
     
@@ -39,4 +82,5 @@ const writeComment = (reviewID, body) =>{
     })
 }
 
-module.exports = { fetchCategories, fetchReviews , writeComment}
+
+module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes, writeComment}

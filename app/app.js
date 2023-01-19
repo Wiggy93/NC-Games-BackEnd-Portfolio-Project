@@ -32,7 +32,7 @@ app.use((err, req, res, next)=>{
 
 app.use((err, req, res, next)=>{
     if (err.code === "23503"){
-        res.status(404).send({message : "Review ID Not Found"})
+        res.status(404).send({message : "Not Found"})
     } else {
         next(err)
     }
