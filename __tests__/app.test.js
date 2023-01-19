@@ -123,7 +123,28 @@ describe('GET commands', () => {
           });
         });
     });
-
+    
+describe('POST commands', () => {
+    test("POST to /api/reivews/:review_id/comments takes a username and body in the request, responding with the posted comment", () =>{
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+            username: "mallionaire",
+            body: "One of the classics!",
+        })
+        .expect(201)
+        .then(({body})=>{
+          const newComment = body.addedComment;
+      
+          expect(newComment).toHaveLength(1)
+          expect(newComment[0].body).toBe("One of the classics!")
+          expect(newComment[0].author).toBe("mallionaire")
+          expect(newComment[0].review_id).toBe(1);
+          expect(newComment[0].votes).toBe(0)
+          expect(typeof newComment[0].created_at).toEqual("string")
+        })
+    })
+});
 
 
 describe('PATCH commands', () => {
@@ -240,6 +261,55 @@ describe('Error handling', () => {
         .then(({body})=>{
             expect(body.message).toEqual("id does not exist")
         });
+    });
+
+    test('400 status: POST a comment to invalid review datatype should return a message ', () => {
+        return request(app)
+        .post("/api/reviews/bananas/comments")
+        .send({
+            username: "mallionaire",
+            body: "This body shouldn't be here!",
+        })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+        })
+    });
+
+    test('404 status: POST a comment to a review id that doesn\' exist should return a message', () => {
+        return request(app)
+        .post("/api/reviews/999/comments")
+        .send({
+            username: "mallionaire",
+            body: "This body shouldn't be here!",
+        })
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("Not Found")
+        })
+    });
+
+    test('400 status: POST a malformed request body should return a message ', () => {
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({  })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Missing required fields in comment (username and/or comment)")
+        })
+    });
+
+    test('404 status: POST using a username not in the database should return an error message', () => {
+        return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+            username: "Alex",
+            body: "This body shouldn't be here!",
+        })
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("Not Found")
+        })
     });
 
     test('404 status, PATCH update votes to invalid review id', () => {
