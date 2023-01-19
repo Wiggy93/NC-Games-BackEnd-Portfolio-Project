@@ -54,7 +54,9 @@ const fetchReviewById = (reviewId) => {
 }
 
 const getCommentsById = (reviewId) =>{
-    return db.query(`SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`, [reviewId])
+    const queryStr = `SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`
+
+    return db.query(queryStr, [reviewId])
     .then((result)=>{
        if (result.rowCount  === 0) {
         return Promise.reject({status : 404, message : "id does not exist"})
