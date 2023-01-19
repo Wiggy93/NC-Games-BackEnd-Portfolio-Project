@@ -109,6 +109,33 @@ describe('GET commands', () => {
 })
 
 
+
+
+describe('PATCH commands', () => {
+    test('200 status: should update the votes value for a given review_id by changing it by the indicated number of votes in a passed object', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes : 1})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedReview).not.toHaveProperty("inc_votes")
+            expect(body.updatedReview.votes).toEqual(2)
+        })
+    });
+
+    test('200 status: should update the votes value for a given review_id by decreasing it by the indicated number of votes in a passed object', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes : -100})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedReview).not.toHaveProperty("inc_votes")
+            expect(body.updatedReview.votes).toEqual(-99)
+        })
+    });
+  
+});
+
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
       return request(app)
@@ -126,6 +153,15 @@ describe('Error handling', () => {
         .then(({body})=>{
             expect(body.message).toEqual("Bad Request")
         })
+    });
+
+    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+        return request(app)
+        .get("/api/reviews/99999")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("review id does not exist")
+        });
     });
 
     test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
@@ -149,12 +185,5 @@ describe('Error handling', () => {
     });
 
 
-    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
-        return request(app)
-        .get("/api/reviews/99999")
-        .expect(404)
-        .then(({body})=>{
-            expect(body.message).toEqual("review id does not exist")
-        });
-    });
+   
 })
