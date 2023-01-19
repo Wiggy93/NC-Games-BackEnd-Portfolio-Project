@@ -44,4 +44,26 @@ const getCommentsById = (reviewId) =>{
        }
     })
 }
-module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById}
+
+
+const updateVotes = ((reviewId, body)=>{
+   const queryStr = 
+
+    `UPDATE reviews 
+    SET votes = votes + $1
+    WHERE review_id IN   
+    (SELECT review_id FROM reviews WHERE review_id=$2)
+    RETURNING*;`
+
+    return db.query(queryStr, [body.inc_votes, reviewId]).then((result)=>{
+        if (result.rowCount === 0) {
+            return Promise.reject({status : 404, message : "review id does not exist"})
+        } else {
+            return result.rows[0]
+           }
+    })
+})
+
+
+
+module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes}

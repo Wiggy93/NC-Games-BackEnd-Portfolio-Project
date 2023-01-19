@@ -1,5 +1,9 @@
 
-const {fetchCategories, fetchReviews, getCommentsById , fetchReviewById } =   require("../models/app.model")
+const {fetchCategories, 
+    fetchReviews, 
+    getCommentsById , 
+    fetchReviewById, 
+    updateVotes } =   require("../models/app.model")
 
 const getCategory = (request, response, next) => {
     fetchCategories().then((categories) => {
@@ -40,4 +44,22 @@ const getComments = ((request, response, next)=>{
     })
 })
 
-module.exports = { getCategory, getReviews, getReviewById, getComments }
+const patchVotes =((request, response,next)=>{
+    
+    const body = request.body;
+    const {reviewId}=request.params;
+   
+    updateVotes(reviewId, body).then((updatedReview)=>{
+        response.status(200).send({updatedReview})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+})
+
+module.exports = { 
+    getCategory, 
+    getReviews, 
+    getReviewById, 
+    getComments, 
+    patchVotes }

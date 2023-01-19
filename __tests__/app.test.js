@@ -109,6 +109,59 @@ describe('GET commands', () => {
 })
 
 
+
+
+describe('PATCH commands', () => {
+    test('200 status: should update the votes value for a given review_id by changing it by the indicated number of votes in a passed object', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes : 1})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedReview).not.toHaveProperty("inc_votes")
+            expect(body.updatedReview).toEqual(
+                {
+                    review_id :1,
+                    title: 'Agricola',
+                    designer: 'Uwe Rosenberg',
+                    owner: 'mallionaire',
+                    review_img_url:
+                      'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                    review_body: 'Farmyard fun!',
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: 2
+                  }
+            )
+        })
+    });
+
+    test('200 status: should update the votes value for a given review_id by decreasing it by the indicated number of votes in a passed object', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes : -100})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedReview).not.toHaveProperty("inc_votes")
+            expect(body.updatedReview).toEqual(
+                {
+                    review_id :1,
+                    title: 'Agricola',
+                    designer: 'Uwe Rosenberg',
+                    owner: 'mallionaire',
+                    review_img_url:
+                      'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                    review_body: 'Farmyard fun!',
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: -99
+                  }
+            )
+        })
+    });
+  
+});
+
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
       return request(app)
@@ -124,8 +177,17 @@ describe('Error handling', () => {
         .get("/api/reviews/bananas")
         .expect(400)
         .then(({body})=>{
-            expect(body.message).toEqual("Bad Request")
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
         })
+    });
+
+    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+        return request(app)
+        .get("/api/reviews/99999")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("review id does not exist")
+        });
     });
 
     test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
@@ -133,7 +195,7 @@ describe('Error handling', () => {
         .get("/api/reviews/bananas/comments")
         .expect(400)
         .then(({body})=>{
-            expect(body.message).toEqual("Bad Request")
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
         })
     })
         
@@ -148,13 +210,34 @@ describe('Error handling', () => {
         });
     });
 
-
-    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+    test('404 status, PATCH update votes to invalid review id', () => {
         return request(app)
-        .get("/api/reviews/99999")
+        .patch("/api/reviews/99999999")
+        .send({ inc_votes : -100})
         .expect(404)
         .then(({body})=>{
             expect(body.message).toEqual("review id does not exist")
-        });
+        })
     });
+
+    test('400 status: PATCH update votes with empty object should return message', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual( "Missing required fields in comment (username and/or comment)")
+        })
+    });
+
+    test('400 status: PATCH update votes with inc_votes as non-number datatype', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({inc_votes : "abc" })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual( "Bad Request - expected a number and got text e.g. received three instead of 3")
+        })
+    });
+   
 })
