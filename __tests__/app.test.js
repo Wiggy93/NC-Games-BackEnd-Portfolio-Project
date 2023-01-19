@@ -119,7 +119,20 @@ describe('PATCH commands', () => {
         .expect(200)
         .then(({body})=>{
             expect(body.updatedReview).not.toHaveProperty("inc_votes")
-            expect(body.updatedReview.votes).toEqual(2)
+            expect(body.updatedReview).toEqual(
+                {
+                    review_id :1,
+                    title: 'Agricola',
+                    designer: 'Uwe Rosenberg',
+                    owner: 'mallionaire',
+                    review_img_url:
+                      'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                    review_body: 'Farmyard fun!',
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: 2
+                  }
+            )
         })
     });
 
@@ -130,7 +143,20 @@ describe('PATCH commands', () => {
         .expect(200)
         .then(({body})=>{
             expect(body.updatedReview).not.toHaveProperty("inc_votes")
-            expect(body.updatedReview.votes).toEqual(-99)
+            expect(body.updatedReview).toEqual(
+                {
+                    review_id :1,
+                    title: 'Agricola',
+                    designer: 'Uwe Rosenberg',
+                    owner: 'mallionaire',
+                    review_img_url:
+                      'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
+                    review_body: 'Farmyard fun!',
+                    category: 'euro game',
+                    created_at: "2021-01-18T10:00:20.514Z",
+                    votes: -99
+                  }
+            )
         })
     });
   
