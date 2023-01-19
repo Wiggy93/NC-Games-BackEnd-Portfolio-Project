@@ -118,7 +118,6 @@ describe('PATCH commands', () => {
         .send({ inc_votes : 1})
         .expect(200)
         .then(({body})=>{
-            expect(body.updatedReview).not.toHaveProperty("inc_votes")
             expect(body.updatedReview).toEqual(
                 {
                     review_id :1,
@@ -142,7 +141,6 @@ describe('PATCH commands', () => {
         .send({ inc_votes : -100})
         .expect(200)
         .then(({body})=>{
-            expect(body.updatedReview).not.toHaveProperty("inc_votes")
             expect(body.updatedReview).toEqual(
                 {
                     review_id :1,
@@ -157,7 +155,26 @@ describe('PATCH commands', () => {
                     votes: -99
                   }
             )
+
         })
+    });
+
+    test('200: confirm that posted comment has actually entered the database by using the getCommentById endpoint', () => {
+        return request(app)
+        .patch("/api/reviews/2")
+        .send({ inc_votes : 5})
+        .expect(200)
+        .then(()=>{
+            return request(app)
+            .get("/api/reviews/2")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.reviewObj[0].votes).toBe(10)
+            })
+            
+           
+        })
+
     });
   
 });
