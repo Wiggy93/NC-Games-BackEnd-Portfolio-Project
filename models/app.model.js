@@ -64,6 +64,12 @@ const updateVotes = ((reviewId, body)=>{
     })
 })
 
+const fetchUsers = (()=>{
+    return db.query(`SELECT * FROM users`).then((result)=>{
+        return result.rows
+    })
+})
+
 const writeComment = (reviewID, body) =>{
     
     const queryStr = 
@@ -81,4 +87,4 @@ const writeComment = (reviewID, body) =>{
 }
 
 
-module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes, writeComment}
+module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, fetchUsers, updateVotes, writeComment}

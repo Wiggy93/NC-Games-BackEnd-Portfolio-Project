@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { getCategory, getReviews, addComments, getReviewById, getComments, patchVotes} = require("../controllers/app.controller")
+const { getCategory, getReviews, getReviewById, getComments, patchVotes, getUsers, addComments} = require("../controllers/app.controller")
 
 app.use(express.json())
 
@@ -8,9 +8,11 @@ app.get("/api/categories", getCategory)
 app.get("/api/reviews", getReviews)
 app.get("/api/reviews/:reviewID", getReviewById);
 app.get("/api/reviews/:reviewId/comments", getComments)
-app.patch("/api/reviews/:reviewId", patchVotes)
+app.get("/api/users", getUsers)
 
 app.post("/api/reviews/:reviewID/comments", addComments)
+
+app.patch("/api/reviews/:reviewId", patchVotes)
 
 app.all('*', (request, response) => {
     response.status(404).send({message : "Invalid path provided - please try again"})
