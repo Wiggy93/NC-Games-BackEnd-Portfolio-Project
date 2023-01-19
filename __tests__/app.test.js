@@ -73,12 +73,13 @@ describe('POST commands', () => {
         .expect(201)
         .then(({body})=>{
           const newComment = body.addedComment;
-        
+      
           expect(newComment).toHaveLength(1)
           expect(newComment[0].body).toBe("One of the classics!")
           expect(newComment[0].author).toBe("mallionaire")
           expect(newComment[0].review_id).toBe(1);
           expect(newComment[0].votes).toBe(0)
+          expect(typeof newComment[0].created_at).toEqual("string")
         })
     })
 });
@@ -128,5 +129,18 @@ describe('Error handling', () => {
             expect(body.message).toEqual("Missing required fields in comment (username and/or comment)")
         })
     });
+
+    // test.only('404 status: POST using a username not in the database should return an error message', () => {
+    //     return request(app)
+    //     .post("/api/reviews/1/comments")
+    //     .send({
+    //         username: "Alex",
+    //         body: "This body shouldn't be here!",
+    //     })
+    //     .expect(404)
+    //     .then(({body})=>{
+    //         expect(body.message).toEqual("User doesn't exist")
+    //     })
+    // });
 
 });

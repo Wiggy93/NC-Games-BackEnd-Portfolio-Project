@@ -26,7 +26,10 @@ const writeComment = (reviewID, body) =>{
     const queryStr = 
     `INSERT INTO comments (author, body, review_id)
     VALUES ($1, $2, $3)
+    
     RETURNING*;`
+
+//WHERE EXISTS (SELECT * FROM users WHERE users.username=$1)
 
     return db.query(queryStr,[body.username, body.body, reviewID])
     
