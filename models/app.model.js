@@ -24,8 +24,6 @@ const fetchReviews = () => {
 
 const fetchReviewById = (reviewId) => {
      return db.query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewId]).then((result) => {
-       
-       
         if(result.rowCount === 0){
             return Promise.reject({status : 404, message : "review id does not exist"})
         } else {
