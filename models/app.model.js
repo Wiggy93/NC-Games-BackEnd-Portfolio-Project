@@ -64,6 +64,21 @@ const updateVotes = ((reviewId, body)=>{
     })
 })
 
+const writeComment = (reviewID, body) =>{
+    
+    const queryStr = 
+    `INSERT INTO comments (author, body, review_id)
+    VALUES ($1, $2, $3)
+    
+    RETURNING*;`
+
+    return db.query(queryStr,[body.username, body.body, reviewID])
+    
+    .then((result)=>{
+            return result.rows;
+        
+    })
+}
 
 
-module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes}
+module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes, writeComment}

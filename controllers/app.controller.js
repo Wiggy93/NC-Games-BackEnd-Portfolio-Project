@@ -1,8 +1,8 @@
-
 const {fetchCategories, 
     fetchReviews, 
     getCommentsById , 
     fetchReviewById, 
+    writeComment,
     updateVotes } =   require("../models/app.model")
 
 const getCategory = (request, response, next) => {
@@ -44,6 +44,19 @@ const getComments = ((request, response, next)=>{
     })
 })
 
+const addComments = ((request, response, next) =>{
+    const {body} = request;
+    const { reviewID } =  request.params;
+    
+    writeComment(reviewID, body).then((newComment)=>{
+        response.status(201).send({addedComment : newComment})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+})
+
+
 const patchVotes =((request, response,next)=>{
     
     const body = request.body;
@@ -62,4 +75,5 @@ module.exports = {
     getReviews, 
     getReviewById, 
     getComments, 
-    patchVotes }
+    patchVotes,
+    addComments }

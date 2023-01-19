@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { getCategory, getReviews, getReviewById, getComments, patchVotes} = require("../controllers/app.controller")
+const { getCategory, getReviews, addComments, getReviewById, getComments, patchVotes} = require("../controllers/app.controller")
 
 app.use(express.json())
 
@@ -10,6 +10,8 @@ app.get("/api/reviews/:reviewID", getReviewById);
 app.get("/api/reviews/:reviewId/comments", getComments)
 app.patch("/api/reviews/:reviewId", patchVotes)
 
+app.post("/api/reviews/:reviewID/comments", addComments)
+
 app.all('*', (request, response) => {
     response.status(404).send({message : "Invalid path provided - please try again"})
 });
@@ -17,7 +19,7 @@ app.all('*', (request, response) => {
 app.use((err, req, res, next)=>{
     if(err.status && err.message){
         res.status(err.status).send({message : err.message});   
-    } else {
+        } else {
         next(err);
     }
 })
@@ -25,6 +27,14 @@ app.use((err, req, res, next)=>{
 app.use((err, req, res, next)=>{
     if (err.code === "22P02"){
         res.status(400).send({message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
+    } else {
+        next(err)
+    }
+})
+
+app.use((err, req, res, next)=>{
+    if (err.code === "23503"){
+        res.status(404).send({message : "Not Found"})
     } else {
         next(err)
     }
@@ -39,7 +49,7 @@ app.use((err, req, res, next)=>{
 })
 
 app.use((err, req, res, next) => {
-   console.log(err)
+    console.log(err);
     res.status(500).send({msg: "Internal server error"})
 })
 
