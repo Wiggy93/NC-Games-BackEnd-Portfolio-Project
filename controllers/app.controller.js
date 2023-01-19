@@ -44,13 +44,16 @@ const getComments = ((request, response, next)=>{
     })
 })
 
-const patchVotes =((request, response)=>{
+const patchVotes =((request, response,next)=>{
     
     const body = request.body;
     const {reviewId}=request.params;
    
     updateVotes(reviewId, body).then((updatedReview)=>{
         response.status(200).send({updatedReview})
+    })
+    .catch((err)=>{
+        next(err)
     })
 })
 

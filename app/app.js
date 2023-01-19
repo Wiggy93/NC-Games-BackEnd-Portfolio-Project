@@ -24,12 +24,19 @@ app.use((err, req, res, next)=>{
 
 app.use((err, req, res, next)=>{
     if (err.code === "22P02"){
-        res.status(400).send({message : "Bad Request"})
+        res.status(400).send({message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
     } else {
         next(err)
     }
 })
 
+app.use((err, req, res, next)=>{
+    if (err.code === "23502"){
+        res.status(400).send({message : "Missing required fields in comment (username and/or comment)"})
+    } else {
+        next(err)
+    }
+})
 
 app.use((err, req, res, next) => {
    console.log(err)

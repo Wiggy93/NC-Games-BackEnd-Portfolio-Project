@@ -54,27 +54,16 @@ const updateVotes = ((reviewId, body)=>{
     WHERE review_id IN   
     (SELECT review_id FROM reviews WHERE review_id=$2)
     RETURNING*;`
- 
+
     return db.query(queryStr, [body.inc_votes, reviewId]).then((result)=>{
-        return result.rows[0]
+        if (result.rowCount === 0) {
+            return Promise.reject({status : 404, message : "review id does not exist"})
+        } else {
+            return result.rows[0]
+           }
     })
 })
 
 
-
-
-    // const initialVotes = ((abc)=>{
-    //     return db.query(`SELECT votes FROM reviews WHERE review_id=$1;`, [reviewId]);
-    // }) 
-
-    // const newVoteTotal = body.inc_votes + initialVotes(reviewId);
-    // console.log(newVoteTotal, "<<< newVoteTotal")
-   
-    //const queryStr1 = `SELECT votes FROM reviews WHERE review_id=$1;`
-   
-    // const currentVotes = (()=>{
-    //     console.log(db.query(queryStr1,[reviewId]),"<<<query1")
-    //        return db.query(queryStr1,[reviewId])
-    //    })
 
 module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, updateVotes}

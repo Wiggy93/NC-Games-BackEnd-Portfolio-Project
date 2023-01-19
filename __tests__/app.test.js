@@ -177,7 +177,7 @@ describe('Error handling', () => {
         .get("/api/reviews/bananas")
         .expect(400)
         .then(({body})=>{
-            expect(body.message).toEqual("Bad Request")
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
         })
     });
 
@@ -195,7 +195,7 @@ describe('Error handling', () => {
         .get("/api/reviews/bananas/comments")
         .expect(400)
         .then(({body})=>{
-            expect(body.message).toEqual("Bad Request")
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
         })
     })
         
@@ -210,6 +210,34 @@ describe('Error handling', () => {
         });
     });
 
+    test('404 status, PATCH update votes to invalid review id', () => {
+        return request(app)
+        .patch("/api/reviews/99999999")
+        .send({ inc_votes : -100})
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("review id does not exist")
+        })
+    });
 
+    test('400 status: PATCH update votes with empty object should return message', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({ })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual( "Missing required fields in comment (username and/or comment)")
+        })
+    });
+
+    test('400 status: PATCH update votes with inc_votes as non-number datatype', () => {
+        return request(app)
+        .patch("/api/reviews/1")
+        .send({inc_votes : "abc" })
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual( "Bad Request - expected a number and got text e.g. received three instead of 3")
+        })
+    });
    
 })
