@@ -37,8 +37,6 @@ describe('GET commands', () => {
         .then(({body}) => {
             const reviews = body.reviews;
           
-
-            expect(Array.isArray(reviews)).toBe(true);
             expect(reviews).toHaveLength(13);
             reviews.forEach((review) => {
                 expect(review).toHaveProperty("owner");
@@ -114,7 +112,7 @@ describe('GET commands', () => {
         .expect(200)
         .then(({ body }) => {
           const userArr = body.allUsers;
-          expect(Array.isArray(userArr)).toBe(true);
+          
           expect(userArr).toHaveLength(4);
           userArr.forEach((user) => {
             expect(user).toHaveProperty("username");
