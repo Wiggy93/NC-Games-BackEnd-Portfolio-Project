@@ -1,6 +1,4 @@
 const db = require("../db/connection");
-const { find } = require("../db/data/test-data/categories");
-
 
 const fetchCategories = (request, response) => {
     return db.query(`SELECT * FROM categories;`).then((result) => {
@@ -9,7 +7,6 @@ const fetchCategories = (request, response) => {
 }
 
 const fetchReviews = (categories, category, sort_by="created_at", order="desc") => {
-    // const acceptedCategories = ["euro game", "social deduction", "dexterity", "children's games"];
     
     const acceptedCategories = categories.map((category)=>{
         return category.slug;
@@ -116,5 +113,21 @@ const writeComment = (reviewID, body) =>{
     })
 }
 
+const removeComment = (commentId)=>{
+   
+    return db.query(`SELECT * FROM comments WHERE comment_id=$1`, [commentId])
+    .then((result)=>{
+       if (result.rowCount === 0) {
+        return Promise.reject({status : 404, message : "id does not exist"})
+       }
+    })
+    .then(()=>{
+        return db.query(`
+        DELETE FROM comments 
+        WHERE comment_id = $1
+        RETURNING*    
+        `, [commentId])
+    })
+}
 
-module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, fetchUsers, updateVotes, writeComment}
+module.exports = { fetchCategories, fetchReviews , fetchReviewById, getCommentsById, fetchUsers, updateVotes, writeComment, removeComment}
