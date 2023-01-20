@@ -214,7 +214,7 @@ describe('PATCH commands', () => {
 });
 
 describe('Get /api/reviews Queries', () => {
-    test('200: should return the reviews with the category dexterity', () => {
+    test('200: should return the reviews with the category passed', () => {
         return request(app).get("/api/reviews?category=dexterity")
         .expect(200)
         .then(({body})=>{
@@ -228,7 +228,7 @@ describe('Get /api/reviews Queries', () => {
             })
         });
 
-    test('200: should return no reviews with category children\'s games', () => {
+    test('200: should return an empty array of reviews when passed a category that has no reviews', () => {
         return request(app).get("/api/reviews?category=children's+games")
         .expect(200)
         .then(({body})=>{
@@ -237,7 +237,7 @@ describe('Get /api/reviews Queries', () => {
         })
     });
 
-    test('200: should return all reviews sorted by review_id ascending', () => {
+    test('200: should return all reviews sorted by the passed sort_by heading and in the passed direction/order', () => {
         return request(app).get("/api/reviews?sort_by=review_id&order=asc")
         .expect(200)
         .then(({body})=>{
