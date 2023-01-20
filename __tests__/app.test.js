@@ -56,34 +56,35 @@ describe('GET commands', () => {
         })
     });
     
+  
     test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
         return request(app)
         .get("/api/reviews/2")
         .expect(200)
         .then(({body}) =>{
-                const reviewObj = body.reviewObj[0]
-    
-                expect(typeof reviewObj).toBe("object");
-                expect(Array.isArray(reviewObj)).toBe(false);
-
-                expect(reviewObj).toEqual(expect.objectContaining(
-                    {
-                    "review_id" : expect.any(Number),
-                    "title" : expect.any(String),
-                    "review_body" : expect.any(String),
-                    "designer" : expect.any(String),
-                    "review_img_url" : expect.any(String),
-                    "votes" : expect.any(Number),
-                    "category" : expect.any(String),
-                    "owner" : expect.any(String),
-                    "created_at" : expect.any(String)
-
-                }
-                ))
-            })
+            const reviewObj = body.reviewObj[0];
+           
+            expect(typeof reviewObj).toBe("object");
+            expect(Array.isArray(reviewObj)).toBe(false);
+            expect(reviewObj).toEqual(
+                expect.objectContaining({
+                    review_id: 2,
+                    title: expect.any(String),
+                    category: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_body: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                })
+            )
+            expect(reviewObj.comment_count).toBe("3")
         })
     })
-
+    
+    
+    
     test('200 status: should return the comments for a given review_id, sorterd in ascending order', () => {
         return request(app)
         .get("/api/reviews/2/comments")
@@ -102,7 +103,7 @@ describe('GET commands', () => {
                 expect(comment).toHaveProperty("review_id");
             });
             expect(comments).toBeSortedBy("created_at");
-
+            
         })
     });
 
@@ -118,10 +119,11 @@ describe('GET commands', () => {
             expect(user).toHaveProperty("username");
             expect(user).toHaveProperty("name");
             expect(user).toHaveProperty("avatar_url");
-          });
         });
     });
-    
+});
+})
+
 describe('POST commands', () => {
     test("POST to /api/reivews/:review_id/comments takes a username and body in the request, responding with the posted comment", () =>{
         return request(app)
@@ -193,6 +195,7 @@ describe('PATCH commands', () => {
         })
     });
 
+
     test('200: confirm that posted comment has actually entered the database by using the getCommentById endpoint', () => {
         return request(app)
         .patch("/api/reviews/2")
@@ -205,12 +208,8 @@ describe('PATCH commands', () => {
             .then(({body})=>{
                 expect(body.reviewObj[0].votes).toBe(10)
             })
-            
-           
         })
-
     });
-  
 });
 
 describe('Error handling', () => {
@@ -223,7 +222,7 @@ describe('Error handling', () => {
         });
     });
 
-    test('404: GET followed by invalid review datatype should return a message', () => {
+    test('400: GET followed by invalid review datatype should return a message', () => {
         return request(app)
         .get("/api/reviews/bananas")
         .expect(400)
@@ -232,7 +231,7 @@ describe('Error handling', () => {
         })
     });
 
-    test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+    test('404: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
         return request(app)
         .get("/api/reviews/99999")
         .expect(404)

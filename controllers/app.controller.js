@@ -25,8 +25,13 @@ const getReviews = ((request, response, next) => {
 })
 
 const getReviewById = ((request, response, next) => {
-    const { reviewID } = request.params;
-    fetchReviewById(reviewID).then((reviewObj)=>{
+    const { reviewId } = request.params;
+    
+   fetchReviews()
+   .then((result)=>{
+       return fetchReviewById(result, reviewId)
+    })
+    .then((reviewObj)=>{
         response.status(200).send({reviewObj})
     })
     .catch((err)=>{

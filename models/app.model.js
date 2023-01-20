@@ -1,4 +1,5 @@
-const db = require("../db/connection")
+const db = require("../db/connection");
+const { find } = require("../db/data/test-data/categories");
 
 
 const fetchCategories = (request, response) => {
@@ -22,15 +23,21 @@ const fetchReviews = () => {
 }
 
 
-const fetchReviewById = (reviewId) => {
-     return db.query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewId]).then((result) => {
-        if(result.rowCount === 0){
-            return Promise.reject({status : 404, message : "review id does not exist"})
-        } else {
-            return result.rows;
-        }
-    })
+const fetchReviewById = (result, reviewId) => {
+
+    const onlyNumber = /^\d+$/.test(reviewId)
+
+    if(onlyNumber === false) {
+        return Promise.reject({status : 400, message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
+    } 
+
+    const findReviewById = result.filter(objects => objects.review_id == reviewId);
    
+    if(findReviewById.length === 0) {
+        return Promise.reject({status : 404, message : "review id does not exist"})
+    } else {
+        return findReviewById;
+    }   
 }
 
 const getCommentsById = (reviewId) =>{
