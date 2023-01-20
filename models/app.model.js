@@ -22,14 +22,37 @@ const fetchReviews = () => {
 }
 
 
-const fetchReviewById = (reviewId) => {
-     return db.query(`SELECT * FROM reviews WHERE review_id=$1`, [reviewId]).then((result) => {
-        if(result.rowCount === 0){
-            return Promise.reject({status : 404, message : "review id does not exist"})
-        } else {
-            return result.rows;
+const fetchReviewById = (result, reviewId) => {
+    //const queryStr  = `SELECT * FROM reviews WHERE review_id=$1`;
+    
+    const inputArr = result
+    const referenceId = reviewId;
+    console.log(inputArr,"result")
+    console.log(referenceId, "<<< reviewId")
+
+
+    const findReviewById = inputArr.find(id=>{
+        if (id.review_id === referenceId ){
+            return id;
         }
+        
+        
     })
+
+    // if(!findReviewById) {
+    //     return Promise.reject({status : 404, message : "review id does not exist"})
+    // } else {
+        console.log(findReviewById, "<<<findByID in mnodel")
+        return findReviewById;
+    // }
+
+     //return db.query(queryStr, [reviewId]).then((result) => {
+    //     if(result.rowCount === 0){
+    //         return Promise.reject({status : 404, message : "review id does not exist"})
+    //     } else {
+    //         return result.rows;
+    //     }
+    // })
    
 }
 
