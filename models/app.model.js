@@ -12,8 +12,6 @@ const fetchReviews = (category, sort_by="created_at", order="desc") => {
 
     const acceptedSortBys = ["review_id","title", "designer", "owner", "review_img_url", "review_body", "category", "created_at", "votes"]
 
-    const acceptedOrders = ["asc", "desc"];
-
     const queryValues = []
 
     let queryStr = 

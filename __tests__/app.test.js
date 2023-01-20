@@ -308,14 +308,13 @@ describe('Get /api/reviews Queries', () => {
         })
     });
     
-    // can't sort by review_image_url, maybe the url word?
-    // test('200: should return all reviews sorted by review_img_url ascending', () => {
-    //     return request(app).get("/api/reviews?sort_by=review_image_url&order=asc")
-    //     .expect(200)
-    //     .then(({body})=>{
-    //         expect(body.reviews).toBeSortedBy("review_image_url")
-    //     })
-    // });
+      test('200: should return all reviews sorted by review_img_url ascending', () => {
+        return request(app).get("/api/reviews?sort_by=review_img_url&order=asc")
+        .expect(200)
+        .then(({body})=>{
+            expect(body.reviews).toBeSortedBy("review_img_url")
+        })
+    });
     
     test('200: should return all reviews sorted by owner ascending', () => {
         return request(app).get("/api/reviews?sort_by=owner&order=asc")
