@@ -218,6 +218,7 @@ describe('Get /api/reviews Queries', () => {
         return request(app).get("/api/reviews?category=dexterity")
         .expect(200)
         .then(({body})=>{
+            
             const reviews = body.reviews;
           
             expect(reviews).toHaveLength(1);
@@ -243,6 +244,16 @@ describe('Get /api/reviews Queries', () => {
             const reviews = body.reviews
             expect(reviews).toHaveLength(13);
             expect(reviews).toBeSortedBy("review_id")
+        })
+    });
+
+    test('200: should return all reviews sorted by review_image_url descending', () => {
+        return request(app).get("/api/reviews?sort_by=review_img_url&order=asc")
+        .expect(200)
+        .then(({body})=>{
+            const reviews = body.reviews
+            expect(reviews).toHaveLength(13);
+            expect(reviews).toBeSortedBy("review_img_url")
         })
     });
 
@@ -387,6 +398,7 @@ describe('Error handling', () => {
             return request(app).get("/api/reviews?category=bananas")
             .expect(400)
             .then(({body})=>{
+                console.log(body, "<<<test body");
                 expect(body.message).toBe("Bad Request - invalid category filter")
             })
         });

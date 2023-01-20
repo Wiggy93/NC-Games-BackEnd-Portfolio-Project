@@ -1,3 +1,4 @@
+const categories = require("../db/data/test-data/categories")
 const {fetchCategories, 
     fetchReviews, 
     getCommentsById , 
@@ -18,10 +19,15 @@ const getCategory = (request, response, next) => {
 const getReviews = ((request, response, next) => {    
     const {category, sort_by, order} = request.query;
     
-    fetchReviews(category, sort_by, order).then((reviews) => {
+    fetchCategories()
+    .then((categories)=>{
+        return fetchReviews(categories, category, sort_by, order)
+    .then((reviews) => {
         response.status(200).send({reviews})
+     })
     })
     .catch((err) => {
+        console.log(err, "controller");
         next(err)
     })
 })

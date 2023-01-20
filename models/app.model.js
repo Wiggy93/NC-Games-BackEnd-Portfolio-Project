@@ -7,8 +7,12 @@ const fetchCategories = (request, response) => {
     })
 }
 
-const fetchReviews = (category, sort_by="created_at", order="desc") => {
-    const acceptedCategories = ["euro game", "social deduction", "dexterity", "children's games"];
+const fetchReviews = (categories, category, sort_by="created_at", order="desc") => {
+    // const acceptedCategories = ["euro game", "social deduction", "dexterity", "children's games"];
+    
+    const acceptedCategories = categories.map((category)=>{
+        return category.slug;
+    })
 
     const acceptedSortBys = ["review_id","title", "designer", "owner", "review_img_url", "review_body", "category", "created_at", "votes"]
 
@@ -34,6 +38,7 @@ const fetchReviews = (category, sort_by="created_at", order="desc") => {
     }
 
     queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
+
     return db.query(queryStr, queryValues).then((result) => {
         return result.rows;
     })
