@@ -56,32 +56,32 @@ describe('GET commands', () => {
         })
     });
     
-    //works if type 2 into reviewId in the model but can't use it when passed into fetchReviewById
-    // test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
-    //     return request(app)
-    //     .get("/api/reviews/2")
-    //     .expect(200)
-    //     .then(({body}) =>{
-    //         const reviewObj = body.reviewObj[0];
-    //         console.log(body, "<<<test");
-
-    //         expect(typeof reviewObj).toBe("object");
-    //         expect(Array.isArray(reviewObj)).toBe(false);
-
-    //         expect(reviewObj).toEqual({
-    //             review_id: 2,
-    //             title: 'Jenga',
-    //             category: 'dexterity',
-    //             designer: 'Leslie Scott',
-    //             owner: 'philippaclaire9',
-    //             review_body: 'Fiddly fun for all the family',
-    //             review_img_url: 'https://images.pexels.com/photos/4473494/pexels-photo-4473494.jpeg?w=700&h=700',
-    //             created_at: "2021-01-18T10:01:41.251Z",
-    //             votes: 5,
-    //             comment_count: '3'
-    //         })
-    //     })
-    // })
+  
+    test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
+        return request(app)
+        .get("/api/reviews/2")
+        .expect(200)
+        .then(({body}) =>{
+            const reviewObj = body.reviewObj[0];
+           
+            expect(typeof reviewObj).toBe("object");
+            expect(Array.isArray(reviewObj)).toBe(false);
+            expect(reviewObj).toEqual(
+                expect.objectContaining({
+                    review_id: 2,
+                    title: expect.any(String),
+                    category: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_body: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                })
+            )
+            expect(reviewObj.comment_count).toBe("3")
+        })
+    })
     
     
     
@@ -196,22 +196,20 @@ describe('PATCH commands', () => {
     });
 
 
-    //same problem as get reviewById if input reviewId works, but functions inside fetchReviewById can't use reviewId
-    // test('200: confirm that posted comment has actually entered the database by using the getCommentById endpoint', () => {
-    //     return request(app)
-    //     .patch("/api/reviews/2")
-    //     .send({ inc_votes : 5})
-    //     .expect(200)
-    //     .then(()=>{
-    //         return request(app)
-    //         .get("/api/reviews/2")
-    //         .expect(200)
-    //         .then(({body})=>{
-    //             console.log(body, "<<<<test");
-    //             expect(body.reviewObj[0].votes).toBe(10)
-    //         })
-    //     })
-    // });
+    test('200: confirm that posted comment has actually entered the database by using the getCommentById endpoint', () => {
+        return request(app)
+        .patch("/api/reviews/2")
+        .send({ inc_votes : 5})
+        .expect(200)
+        .then(()=>{
+            return request(app)
+            .get("/api/reviews/2")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.reviewObj[0].votes).toBe(10)
+            })
+        })
+    });
 });
 
 describe('Error handling', () => {
@@ -224,23 +222,23 @@ describe('Error handling', () => {
         });
     });
 
-    // test('400: GET followed by invalid review datatype should return a message', () => {
-    //     return request(app)
-    //     .get("/api/reviews/bananas")
-    //     .expect(400)
-    //     .then(({body})=>{
-    //         expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
-    //     })
-    // });
+    test('400: GET followed by invalid review datatype should return a message', () => {
+        return request(app)
+        .get("/api/reviews/bananas")
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+        })
+    });
 
-    // test('400: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
-    //     return request(app)
-    //     .get("/api/reviews/99999")
-    //     .expect(404)
-    //     .then(({body})=>{
-    //         expect(body.message).toEqual("review id does not exist")
-    //     });
-    // });
+    test('404: GET follow by invalid review id ie resource that doesn\'t exist should return a message', () => {
+        return request(app)
+        .get("/api/reviews/99999")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("review id does not exist")
+        });
+    });
 
     test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
         return request(app)

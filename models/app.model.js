@@ -25,34 +25,19 @@ const fetchReviews = () => {
 
 const fetchReviewById = (result, reviewId) => {
 
-    // const findReviewById = result.filter(objects => objects.review_id === reviewId);
-    console.log(result, reviewId, "<<<passing into fetchReviewById");
-    let findReviewById = [];
+    const onlyNumber = /^\d+$/.test(reviewId)
 
-    for(let i = 0; i < result.length; i++){
-        if(result[i].review_id === 2) {
-            console.log([i])
-            findReviewById.push(result[i])
-        }
-    }
+    if(onlyNumber === false) {
+        return Promise.reject({status : 400, message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
+    } 
 
-    //works with the number 2 and not a reference.
-
-    console.log(findReviewById, "<<<find review")
-    // if(findReviewById.length === 0) {
-    //     return Promise.reject({status : 400, message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
-    // } else {
-        return findReviewById;
-    // }
-
-     //return db.query(queryStr, [reviewId]).then((result) => {
-    //     if(result.rowCount === 0){
-    //         return Promise.reject({status : 404, message : "review id does not exist"})
-    //     } else {
-    //         return result.rows;
-    //     }
-    // })
+    const findReviewById = result.filter(objects => objects.review_id == reviewId);
    
+    if(findReviewById.length === 0) {
+        return Promise.reject({status : 404, message : "review id does not exist"})
+    } else {
+        return findReviewById;
+    }   
 }
 
 const getCommentsById = (reviewId) =>{

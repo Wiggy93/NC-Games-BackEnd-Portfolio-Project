@@ -29,14 +29,11 @@ const getReviewById = ((request, response, next) => {
     
    fetchReviews()
    .then((result)=>{
-        console.log(result, "<<<fetchReviews")
        return fetchReviewById(result, reviewId)
     })
     .then((reviewObj)=>{
-        console.log(reviewObj, "<<<reviewObj");
         response.status(200).send({reviewObj})
     })
-   
     .catch((err)=>{
         next(err)
     })
