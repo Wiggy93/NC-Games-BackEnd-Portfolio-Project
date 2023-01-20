@@ -212,6 +212,54 @@ describe('PATCH commands', () => {
     });
 });
 
+describe('Get /api/reviews Queries', () => {
+    test('200: should return the reviews with the category passed', () => {
+        return request(app).get("/api/reviews?category=dexterity")
+        .expect(200)
+        .then(({body})=>{
+            
+            const reviews = body.reviews;
+          
+            expect(reviews).toHaveLength(1);
+            reviews.forEach((review)=>{
+                expect(review).toHaveProperty("category")
+            })            
+            })
+        });
+
+    test('200: should return an empty array of reviews when passed a category that has no reviews', () => {
+        return request(app).get("/api/reviews?category=children's+games")
+        .expect(200)
+        .then(({body})=>{
+            const reviews = body.reviews
+            expect(reviews).toHaveLength(0);
+        })
+    });
+
+    test('200: should return all reviews sorted by the passed sort_by heading and in the passed direction/order', () => {
+        return request(app).get("/api/reviews?sort_by=review_id&order=asc")
+        .expect(200)
+        .then(({body})=>{
+            const reviews = body.reviews
+            expect(reviews).toHaveLength(13);
+            expect(reviews).toBeSortedBy("review_id")
+        })
+    });
+
+    test('200: should return all reviews sorted by review_image_url descending', () => {
+        return request(app).get("/api/reviews?sort_by=review_img_url&order=asc")
+        .expect(200)
+        .then(({body})=>{
+            const reviews = body.reviews
+            expect(reviews).toHaveLength(13);
+            expect(reviews).toBeSortedBy("review_img_url")
+        })
+    });
+
+    
+    
+}); 
+
 describe('DELETE commands', () => {
     test('204: should delete given comment by comment_id', () => {
         return request(app).delete("/api/comments/1")
@@ -253,106 +301,109 @@ describe('Error handling', () => {
             expect(body.message).toEqual("review id does not exist")
         });
     });
-
-    test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
-        return request(app)
-        .get("/api/reviews/bananas/comments")
-        .expect(400)
-        .then(({body})=>{
-            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+    describe('getCommets', () => {
+        test('400: GET followed by a comment on an invalid review datatype should return a message', () => {
+            return request(app)
+            .get("/api/reviews/bananas/comments")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+            })
         })
-    })
-        
-    
 
-    test('404: GET follow by a comment on an invalid review id ie resource that doesn\'t exist should return a message', () => {
-        return request(app)
-        .get("/api/reviews/99999/comments")
-        .expect(404)
-        .then(({body})=>{
-            expect(body.message).toEqual("id does not exist")
+        test('404: GET follow by a comment on an invalid review id ie resource that doesn\'t exist should return a message', () => {
+            return request(app)
+            .get("/api/reviews/99999/comments")
+            .expect(404)
+            .then(({body})=>{
+                expect(body.message).toEqual("id does not exist")
+            });
+        });
+    });
+    
+        
+    describe('postComments errors', () => {
+        test('400 status: POST a comment to invalid review datatype should return a message ', () => {
+            return request(app)
+            .post("/api/reviews/bananas/comments")
+            .send({
+                username: "mallionaire",
+                body: "This body shouldn't be here!",
+            })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+            })
+        });
+    
+        test('404 status: POST a comment to a review id that doesn\' exist should return a message', () => {
+            return request(app)
+            .post("/api/reviews/999/comments")
+            .send({
+                username: "mallionaire",
+                body: "This body shouldn't be here!",
+            })
+            .expect(404)
+            .then(({body})=>{
+                expect(body.message).toEqual("Not Found")
+            })
+        });
+    
+        test('400 status: POST a malformed request body should return a message ', () => {
+            return request(app)
+            .post("/api/reviews/1/comments")
+            .send({  })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual("Missing required fields in comment (username and/or comment)")
+            })
+        });
+    
+        test('404 status: POST using a username not in the database should return an error message', () => {
+            return request(app)
+            .post("/api/reviews/1/comments")
+            .send({
+                username: "Alex",
+                body: "This body shouldn't be here!",
+            })
+            .expect(404)
+            .then(({body})=>{
+                expect(body.message).toEqual("Not Found")
+            })
         });
     });
 
-    test('400 status: POST a comment to invalid review datatype should return a message ', () => {
-        return request(app)
-        .post("/api/reviews/bananas/comments")
-        .send({
-            username: "mallionaire",
-            body: "This body shouldn't be here!",
-        })
-        .expect(400)
-        .then(({body})=>{
-            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
-        })
-    });
-
-    test('404 status: POST a comment to a review id that doesn\' exist should return a message', () => {
-        return request(app)
-        .post("/api/reviews/999/comments")
-        .send({
-            username: "mallionaire",
-            body: "This body shouldn't be here!",
-        })
-        .expect(404)
-        .then(({body})=>{
-            expect(body.message).toEqual("Not Found")
-        })
-    });
-
-    test('400 status: POST a malformed request body should return a message ', () => {
-        return request(app)
-        .post("/api/reviews/1/comments")
-        .send({  })
-        .expect(400)
-        .then(({body})=>{
-            expect(body.message).toEqual("Missing required fields in comment (username and/or comment)")
-        })
-    });
-
-    test('404 status: POST using a username not in the database should return an error message', () => {
-        return request(app)
-        .post("/api/reviews/1/comments")
-        .send({
-            username: "Alex",
-            body: "This body shouldn't be here!",
-        })
-        .expect(404)
-        .then(({body})=>{
-            expect(body.message).toEqual("Not Found")
-        })
-    });
-
-    test('404 status, PATCH update votes to invalid review id', () => {
-        return request(app)
-        .patch("/api/reviews/99999999")
-        .send({ inc_votes : -100})
-        .expect(404)
-        .then(({body})=>{
-            expect(body.message).toEqual("review id does not exist")
-        })
-    });
-
-    test('400 status: PATCH update votes with empty object should return message', () => {
-        return request(app)
-        .patch("/api/reviews/1")
-        .send({ })
-        .expect(400)
-        .then(({body})=>{
-            expect(body.message).toEqual( "Missing required fields in comment (username and/or comment)")
-        })
-    });
-
-    test('400 status: PATCH update votes with inc_votes as non-number datatype', () => {
-        return request(app)
-        .patch("/api/reviews/1")
-        .send({inc_votes : "abc" })
-        .expect(400)
-        .then(({body})=>{
-            expect(body.message).toEqual( "Bad Request - expected a number and got text e.g. received three instead of 3")
-        })
-    });
-   
+    describe('Update/Patch votes errors', () => {
+        test('404 status, PATCH update votes to invalid review id', () => {
+            return request(app)
+            .patch("/api/reviews/99999999")
+            .send({ inc_votes : -100})
+            .expect(404)
+            .then(({body})=>{
+                expect(body.message).toEqual("review id does not exist")
+            })
+        });
+    
+        test('400 status: PATCH update votes with empty object should return message', () => {
+            return request(app)
+            .patch("/api/reviews/1")
+            .send({ })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual( "Missing required fields in comment (username and/or comment)")
+            })
+        });
+    
+        test('400 status: PATCH update votes with inc_votes as non-number datatype', () => {
+            return request(app)
+            .patch("/api/reviews/1")
+            .send({inc_votes : "abc" })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual( "Bad Request - expected a number and got text e.g. received three instead of 3")
+            })
+        });
+       
 
     test('400: DELETE if comment_id isn\' valid datatype', () => {
         return request(app)
@@ -370,6 +421,34 @@ describe('Error handling', () => {
         .expect(404)
         .then(({body})=>{
             expect(body.message).toEqual("id does not exist")
-    })
+        });
+
+    describe('Get Review Queries', () => {
+        test('400: If query a category filter that doesn\'t exist', () => {
+            return request(app).get("/api/reviews?category=bananas")
+            .expect(400)
+            .then(({body})=>{
+                console.log(body, "<<<test body");
+                expect(body.message).toBe("Bad Request - invalid category filter")
+            })
+        });
+       
+        test('400: If sort a category that doesn\'t exist', () => {
+            return request(app).get("/api/reviews?sort_by=bananas+asc")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toBe("Bad Request - invalid sort function")
+            })
+        });
+
+        test('400: If sort a valid category by non-asc or desc', () => {
+            return request(app).get("/api/reviews?sort_by=title+bananas")
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toBe("Bad Request - invalid sort function")
+            })
+        });
+    });
+})
 });
     

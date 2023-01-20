@@ -1,6 +1,4 @@
 const db = require("../db/connection");
-const { find } = require("../db/data/test-data/categories");
-
 
 const fetchCategories = (request, response) => {
     return db.query(`SELECT * FROM categories;`).then((result) => {
@@ -8,16 +6,38 @@ const fetchCategories = (request, response) => {
     })
 }
 
-const fetchReviews = () => {
-  
-    const reviewCommentCount = 
+const fetchReviews = (categories, category, sort_by="created_at", order="desc") => {
+    
+    const acceptedCategories = categories.map((category)=>{
+        return category.slug;
+    })
+
+    const acceptedSortBys = ["review_id","title", "designer", "owner", "review_img_url", "review_body", "category", "created_at", "votes"]
+
+    const queryValues = []
+
+    let queryStr = 
     `SELECT reviews.*, COUNT (comments.comment_id) AS comment_count  
     FROM reviews 
-    LEFT JOIN comments ON comments.review_id=reviews.review_id 
-    GROUP BY reviews.review_id
-    ORDER BY created_at DESC;`;
+    LEFT JOIN comments ON comments.review_id=reviews.review_id`
     
-    return db.query(reviewCommentCount).then((result) => {
+    if(category !== undefined){
+        if(!acceptedCategories.includes(category.toLowerCase())){
+            return Promise.reject({status : 400, message : "Bad Request - invalid category filter"})
+        } else {
+            queryValues.push(category);
+            queryStr += ` WHERE reviews.category = $1`
+        }
+    }
+
+    if ( !acceptedSortBys.includes(sort_by.toLowerCase()) || 
+    !["asc", "desc"].includes(order.toLowerCase())) {
+        return Promise.reject({status : 400, message : "Bad Request - invalid sort function"})
+    }
+
+    queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order}`
+
+    return db.query(queryStr, queryValues).then((result) => {
         return result.rows;
     })
 }
@@ -41,13 +61,14 @@ const fetchReviewById = (result, reviewId) => {
 }
 
 const getCommentsById = (reviewId) =>{
-    return db.query(`SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`, [reviewId])
+    const queryStr = `SELECT * FROM comments WHERE review_id=$1 ORDER BY created_at ASC`
+
+    return db.query(queryStr, [reviewId])
     .then((result)=>{
-       if (result.rowCount === 0) {
+       if (result.rowCount  === 0) {
         return Promise.reject({status : 404, message : "id does not exist"})
        } else {
            return result.rows;
-
        }
     })
 }
@@ -89,7 +110,6 @@ const writeComment = (reviewID, body) =>{
     
     .then((result)=>{
             return result.rows;
-        
     })
 }
 

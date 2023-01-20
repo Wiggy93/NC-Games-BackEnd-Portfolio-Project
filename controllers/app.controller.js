@@ -17,18 +17,29 @@ const getCategory = (request, response, next) => {
 }
 
 const getReviews = ((request, response, next) => {    
-    fetchReviews().then((reviews) => {
+    const {category, sort_by, order} = request.query;
+    
+    fetchCategories()
+    .then((categories)=>{
+     
+        return fetchReviews(categories, category, sort_by, order)
+    .then((reviews) => {
         response.status(200).send({reviews})
+     })
     })
     .catch((err) => {
+        console.log(err, "controller");
         next(err)
     })
 })
 
 const getReviewById = ((request, response, next) => {
-    const { reviewId } = request.params;
+    const {category, sort_by, order} = request.query;
+    const {reviewId} = request.params;
     
-   fetchReviews()
+    fetchCategories()
+    .then((categories)=>{
+        return fetchReviews(categories, category, sort_by, order)})
    .then((result)=>{
        return fetchReviewById(result, reviewId)
     })
@@ -55,7 +66,7 @@ const addComments = ((request, response, next) =>{
     const {body} = request;
     const { reviewID } =  request.params;
     
-    writeComment(reviewID, body).then((newComment)=>{
+        writeComment(reviewID, body).then((newComment)=>{
         response.status(201).send({addedComment : newComment})
     })
     .catch((err)=>{
@@ -77,7 +88,7 @@ const patchVotes =((request, response,next)=>{
     })
 })
 
-const getUsers = ((request, response)=>{
+const getUsers = ((request, response)=>{   
     fetchUsers().then((allUsers)=>{
         response.status(200).send({allUsers})
     })
