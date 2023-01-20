@@ -212,6 +212,20 @@ describe('PATCH commands', () => {
     });
 });
 
+describe('DELETE commands', () => {
+    test('204: should delete given comment by comment_id', () => {
+        return request(app).delete("/api/comments/1")
+        .expect(204)
+        .then(()=>{
+           return db.query(`SELECT * FROM comments WHERE comment_id=1`)
+            .then((results)=>{
+                expect(results.rows).toHaveLength(0);
+            })
+        })
+    });
+});
+
+
 describe('Error handling', () => {
     test("GET followed by an invalid endpoing should return a 404 Not Found error ", () => {
       return request(app)
@@ -339,4 +353,23 @@ describe('Error handling', () => {
         })
     });
    
-})
+
+    test('400: DELETE if comment_id isn\' valid datatype', () => {
+        return request(app)
+        .delete("/api/comments/bananas")
+        .expect(400)
+        .then(({body})=>{
+            expect(body.message).toEqual("Bad Request - expected a number and got text e.g. received three instead of 3")
+            })
+        })
+    });
+
+    test('404: DELETE if comment_id doesn\'t exist', () => {
+        return request(app)
+        .delete("/api/comments/999899")
+        .expect(404)
+        .then(({body})=>{
+            expect(body.message).toEqual("id does not exist")
+    })
+});
+    
