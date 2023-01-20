@@ -1,4 +1,5 @@
-const db = require("../db/connection")
+const db = require("../db/connection");
+const { find } = require("../db/data/test-data/categories");
 
 
 const fetchCategories = (request, response) => {
@@ -23,26 +24,24 @@ const fetchReviews = () => {
 
 
 const fetchReviewById = (result, reviewId) => {
-    //const queryStr  = `SELECT * FROM reviews WHERE review_id=$1`;
-    
-    const inputArr = result
-    const referenceId = reviewId;
-    console.log(inputArr,"result")
-    console.log(referenceId, "<<< reviewId")
 
+    // const findReviewById = result.filter(objects => objects.review_id === reviewId);
+    console.log(result, reviewId, "<<<passing into fetchReviewById");
+    let findReviewById = [];
 
-    const findReviewById = inputArr.find(id=>{
-        if (id.review_id === referenceId ){
-            return id;
+    for(let i = 0; i < result.length; i++){
+        if(result[i].review_id === 2) {
+            console.log([i])
+            findReviewById.push(result[i])
         }
-        
-        
-    })
+    }
 
-    // if(!findReviewById) {
-    //     return Promise.reject({status : 404, message : "review id does not exist"})
+    //works with the number 2 and not a reference.
+
+    console.log(findReviewById, "<<<find review")
+    // if(findReviewById.length === 0) {
+    //     return Promise.reject({status : 400, message : "Bad Request - expected a number and got text e.g. received three instead of 3"})
     // } else {
-        console.log(findReviewById, "<<<findByID in mnodel")
         return findReviewById;
     // }
 

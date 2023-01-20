@@ -56,12 +56,14 @@ describe('GET commands', () => {
         })
     });
     
+    //works if type 2 into reviewId in the model but can't use it when passed into fetchReviewById
     // test('200: /api/reviews/:review_id returns an object specific to that id with  all the relevant key:value pairs', () => {
     //     return request(app)
     //     .get("/api/reviews/2")
     //     .expect(200)
     //     .then(({body}) =>{
-    //         const reviewObj = body.reviewObj;
+    //         const reviewObj = body.reviewObj[0];
+    //         console.log(body, "<<<test");
 
     //         expect(typeof reviewObj).toBe("object");
     //         expect(Array.isArray(reviewObj)).toBe(false);
@@ -193,7 +195,8 @@ describe('PATCH commands', () => {
         })
     });
 
-    /// come back to, accidentally changing review_id in database.
+
+    //same problem as get reviewById if input reviewId works, but functions inside fetchReviewById can't use reviewId
     // test('200: confirm that posted comment has actually entered the database by using the getCommentById endpoint', () => {
     //     return request(app)
     //     .patch("/api/reviews/2")
@@ -204,15 +207,11 @@ describe('PATCH commands', () => {
     //         .get("/api/reviews/2")
     //         .expect(200)
     //         .then(({body})=>{
-    //             console.log(body, "<<< patch body")
-    //             expect(body.reviewObj.votes).toBe(10)
+    //             console.log(body, "<<<<test");
+    //             expect(body.reviewObj[0].votes).toBe(10)
     //         })
-            
-           
     //     })
-
     // });
-  
 });
 
 describe('Error handling', () => {
@@ -225,7 +224,7 @@ describe('Error handling', () => {
         });
     });
 
-    // test('404: GET followed by invalid review datatype should return a message', () => {
+    // test('400: GET followed by invalid review datatype should return a message', () => {
     //     return request(app)
     //     .get("/api/reviews/bananas")
     //     .expect(400)
