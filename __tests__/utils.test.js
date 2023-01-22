@@ -2,6 +2,8 @@ const {
 	convertTimestampToDate,
 	createRef,
 	formatComments,
+	isValidJson,
+	isValidJsonObject
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -101,4 +103,104 @@ describe("formatComments", () => {
 		const formattedComments = formatComments(comments, {});
 		expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
 	});
+});
+
+describe('isValidJson()', () => {
+    it('should return false if the argument could not be parsed as json', () => {
+        expect(isValidJson()).toBe(false);
+        expect(isValidJson(undefined)).toBe(false);
+        expect(isValidJson(NaN)).toBe(false);
+        expect(isValidJson(new Error('error instance'))).toBe(false);
+        expect(isValidJson('')).toBe(false);
+        expect(isValidJson('simple string')).toBe(false);
+        expect(isValidJson('.01')).toBe(false);
+        expect(isValidJson([])).toBe(false);
+        expect(isValidJson(['filled', 'array'])).toBe(false);
+        expect(isValidJson('[\'filled\',\'array\']')).toBe(false);
+        expect(isValidJson({})).toBe(false);
+        expect(isValidJson({filled: 'object'})).toBe(false);
+        expect(isValidJson('{\'filled\':\'object\'}')).toBe(false);
+        expect(isValidJson('{"filled":"object",}')).toBe(false);
+    });
+
+    it('should return true if the argument could be parsed as json', () => {
+        expect(isValidJson(null)).toBe(true);
+        expect(isValidJson('null')).toBe(true);
+        expect(isValidJson(true)).toBe(true);
+        expect(isValidJson('true')).toBe(true);
+        expect(isValidJson(false)).toBe(true);
+        expect(isValidJson('false')).toBe(true);
+        expect(isValidJson(10)).toBe(true);
+        expect(isValidJson('10')).toBe(true);
+        expect(isValidJson(-10)).toBe(true);
+        expect(isValidJson('-10')).toBe(true);
+        expect(isValidJson(10.01)).toBe(true);
+        expect(isValidJson('10.01')).toBe(true);
+        expect(isValidJson(-10.01)).toBe(true);
+        expect(isValidJson('-10.01')).toBe(true);
+        expect(isValidJson(0.01)).toBe(true);
+        expect(isValidJson('0.01')).toBe(true);
+        expect(isValidJson(-0.01)).toBe(true);
+        expect(isValidJson('-0.01')).toBe(true);
+        expect(isValidJson(.01)).toBe(true);
+        expect(isValidJson(0)).toBe(true);
+        expect(isValidJson('0')).toBe(true);
+        expect(isValidJson('{}')).toBe(true);
+        expect(isValidJson('{"filled":"object"}')).toBe(true);
+        expect(isValidJson('{"filled":"object","with":"two keys"}')).toBe(true);
+        expect(isValidJson("{\"filled\":\"object\"}")).toBe(true);
+        expect(isValidJson('[]')).toBe(true);
+        expect(isValidJson('["filled","array"]')).toBe(true);
+        expect(isValidJson("[\"filled\",\"array\"]")).toBe(true);
+    });
+});
+
+describe('isValidJsonObject()', () => {
+    it('should return false if the argument could not be parsed as a valid json object', () => {
+        expect(isValidJsonObject()).toBe(false);
+        expect(isValidJsonObject(undefined)).toBe(false);
+        expect(isValidJsonObject(NaN)).toBe(false);
+        expect(isValidJsonObject(new Error('error instance'))).toBe(false);
+        expect(isValidJsonObject('')).toBe(false);
+        expect(isValidJsonObject('simple string')).toBe(false);
+        expect(isValidJsonObject('.01')).toBe(false);
+        expect(isValidJsonObject([])).toBe(false);
+        expect(isValidJsonObject(['filled', 'array'])).toBe(false);
+        expect(isValidJsonObject('[\'filled\',\'array\']')).toBe(false);
+        expect(isValidJsonObject({})).toBe(false);
+        expect(isValidJsonObject({filled: 'object'})).toBe(false);
+        expect(isValidJsonObject('{\'filled\':\'object\'}')).toBe(false);
+        expect(isValidJsonObject('{"filled":"object",}')).toBe(false);
+        expect(isValidJsonObject(null)).toBe(false);
+        expect(isValidJsonObject('null')).toBe(false);
+        expect(isValidJsonObject(true)).toBe(false);
+        expect(isValidJsonObject('true')).toBe(false);
+        expect(isValidJsonObject(false)).toBe(false);
+        expect(isValidJsonObject('false')).toBe(false);
+        expect(isValidJsonObject(10)).toBe(false);
+        expect(isValidJsonObject('10')).toBe(false);
+        expect(isValidJsonObject(-10)).toBe(false);
+        expect(isValidJsonObject('-10')).toBe(false);
+        expect(isValidJsonObject(10.01)).toBe(false);
+        expect(isValidJsonObject('10.01')).toBe(false);
+        expect(isValidJsonObject(-10.01)).toBe(false);
+        expect(isValidJsonObject('-10.01')).toBe(false);
+        expect(isValidJsonObject(0.01)).toBe(false);
+        expect(isValidJsonObject('0.01')).toBe(false);
+        expect(isValidJsonObject(-0.01)).toBe(false);
+        expect(isValidJsonObject('-0.01')).toBe(false);
+        expect(isValidJsonObject(.01)).toBe(false);
+        expect(isValidJsonObject(0)).toBe(false);
+        expect(isValidJsonObject('0')).toBe(false);
+        expect(isValidJsonObject('[]')).toBe(false);
+        expect(isValidJsonObject('["filled","array"]')).toBe(false);
+        expect(isValidJsonObject("[\"filled\",\"array\"]")).toBe(false);
+    });
+
+    it('should return true if the argument could be parsed as a valid json object', () => {
+        expect(isValidJsonObject('{}')).toBe(true);
+        expect(isValidJsonObject('{"filled":"object"}')).toBe(true);
+        expect(isValidJsonObject('{"filled":"object","with":"two keys"}')).toBe(true);
+        expect(isValidJsonObject("{\"filled\":\"object\"}")).toBe(true);
+    });
 });

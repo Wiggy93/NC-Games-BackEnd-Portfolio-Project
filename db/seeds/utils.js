@@ -1,5 +1,6 @@
-const format = require("pg-format");
+
 const db = require("../connection");
+
 
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
 	if (!created_at) return { ...otherProperties };
@@ -24,3 +25,32 @@ exports.formatComments = (comments, idLookup) => {
 	});
 };
 
+exports.isValidJson = (text) => {
+    try {
+        JSON.parse(text);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+exports.isValidJsonObject = (text) => {
+    if (typeof text !== 'string') {
+        return false;
+    }
+
+    const startsWithOpeningCurlyBrace = text.indexOf('{') === 0;
+    const endsWithClosingCurlyBrace = text.lastIndexOf('}') === (text.length - 1);
+
+    if (startsWithOpeningCurlyBrace && endsWithClosingCurlyBrace) {
+        //return isValidJson(text);
+		try {
+			JSON.parse(text);
+			return true;
+		} catch {
+			return false;
+		}
+    }
+
+    return false;
+}
