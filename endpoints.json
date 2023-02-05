@@ -30,8 +30,89 @@
         }
       ]
     }
+  },
+"GET /api/reviews/:reviewId": {
+  "description": "serves single object with all data for a specific review id. Only accepts digits as query",
+  "queries" : ["review_id"],
+  "exampleResponse": {
+    "reviewObj": [
+      {
+        "review_id": 1,
+        "title": "Culture a Love of Agriculture With Agricola",
+        "category": "strategy",
+        "designer": "Uwe Rosenberg",
+        "owner": "tickle122",
+        "review_body": "You could sum up Agricola with the simple phrase 'Farmyard Fun' but the mechanics and game play add so much more than that. You'll find yourself torn between breeding pigs, or sowing crops. Its joyeous and rewarding and it makes you think of time spent outside, which is much harder to do these days!",
+        "review_img_url": "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700",
+        "created_at": "2021-01-18T10:00:20.514Z",
+        "votes": 1,
+        "comment_count": "3"
+      }
+    ]
   }
+},
 
+"GET /api/reviews/:reviewid/comments" : {
+  "description" : "serves an array with all comments associated with a review id. Sorted in ascending comment_id order",
+  "queries": ["review_id"],
+  "exampleResponse" : {
+    "comments": [
+      {
+        "comment_id": 61,
+        "body": "Consequat nisi dolor nulla esse sunt eu ipsum laborum deserunt duis. Ffugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat?",
+        "review_id": 1,
+        "author": "weegembump",
+        "votes": 1,
+        "created_at": "2021-03-27T14:15:36.110Z"
+      },
+      {
+        "comment_id": 60,
+        "body": "Laboris nostrud ea ex occaecat aute quis consectetur anim.",
+        "review_id": 1,
+        "author": "cooljmessy",
+        "votes": 17,
+        "created_at": "2021-03-27T14:15:38.110Z"
+      },
+      {
+        "comment_id": 59,
+        "body": "Quis duis mollit ad enim deserunt.",
+        "review_id": 1,
+        "author": "jessjelly",
+        "votes": 3,
+        "created_at": "2021-03-27T19:48:58.110Z"
+      }
+    ]
+  }
+},
+"GET /api/users": {
+  "description" : "serves an array of all users",
+  "queries": "none",
+  "exampleResponse": {
+    "allUsers":[
+      {
+        "username": "tickle122",
+        "name": "Tom Tickle",
+        "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+      }
+    ]
+  }
+},
+
+"PATCH /api/reviews/:reviewid" : {
+  "description" : "accepts a body which updates the number of votes for a given review_id by the indicated newVote value. Accepts positive and negative increments",
+  "required input format" : "{inv_votes: newVoteIncrement}",
+  "queries" : "none",
+  "exampleInput" : "{ inc_votes : 1 }"
+},
   
+"POST /api/reviews/:reviewid/comments": {
+  "description" : "accepts an object which includes a valid username, a review id and the input text",
+  "queries": "none",
+  "exampleInput": { "username": "mallionaire", "body": "One of the classics!"}
+},
 
+"DELETE /api/comments/:commentid" : {
+  "description": "accepts a delete request to a valid comment_id",
+  "exampleResponse": "204 status and no content"
+}
 }

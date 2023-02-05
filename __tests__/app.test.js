@@ -128,7 +128,7 @@ describe('GET commands', () => {
 })
 
 describe('Get valid JSON of all endpoints', () => {
-    test.only('200 : GET /api/ should return a list of all possible endpoints as a JSON with no error', () => {
+    test('200 : GET /api/ should return a list of all possible endpoints as a JSON with no error', () => {
         jest.setTimeout(10000);
         return request(app).get("/api")
         .expect(200)
