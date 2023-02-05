@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
-const { getCategory, getReviews, getReviewById, getComments, patchVotes, getUsers, addComments, deleteComment} = require("../controllers/app.controller")
+const {getApi, getCategory, getReviews, getReviewById, getComments, patchVotes, getUsers, addComments, deleteComment} = require("../controllers/app.controller")
 const {customErrorHandler, stringInsteadOfNumber, notFound, missingFields, serverError} = require("./app.errors")
 
 app.use(express.json());
 
+app.get("/api/",getApi)
 app.get("/api/categories", getCategory)
 app.get("/api/reviews", getReviews)
 app.get("/api/reviews/:reviewId", getReviewById);

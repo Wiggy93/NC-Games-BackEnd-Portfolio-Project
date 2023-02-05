@@ -1,11 +1,30 @@
-const {fetchCategories, 
+const {
+    fetchCategories, 
     fetchReviews, 
     getCommentsById , 
     fetchReviewById, 
     updateVotes,
     fetchUsers ,
     writeComment,
-    removeComment} =   require("../models/app.model")
+    removeComment,
+    fetchAPI,
+    } =   require("../models/app.model")
+// const fsPromises = require("fs/promises");
+
+
+const getApi = (request, response, next) =>{
+    return fetchAPI()
+    .then((data)=>{
+        const jsonData = JSON.stringify(data);
+        return jsonData;
+    })
+    .then((readFile)=>{
+        console.log(readFile, "<<<,line 20");
+
+        response.status(200).send({readFile})
+    })
+    .catch((err)=>console.log(err))
+}
 
 const getCategory = (request, response, next) => {
     fetchCategories().then((categories) => {
@@ -109,7 +128,8 @@ const deleteComment =((request, response, next)=>{
 })
 
 
-module.exports = { 
+module.exports = {
+    getApi, 
     getCategory, 
     getReviews, 
     getReviewById, 

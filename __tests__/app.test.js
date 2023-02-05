@@ -3,6 +3,9 @@ const app = require("../app/app");
 const db  = require("../db/connection");
 const dataTest = require("../db/data/test-data/index")
 const seed = require("../db/seeds/seed")
+const { isValidJson, isValidJsonObject} = require("../db/seeds/utils");
+const fetchAPI = require("../models/app.model")
+
 
 beforeEach(() => {
     return seed(dataTest);
@@ -119,10 +122,24 @@ describe('GET commands', () => {
             expect(user).toHaveProperty("username");
             expect(user).toHaveProperty("name");
             expect(user).toHaveProperty("avatar_url");
+            });
         });
     });
-});
 })
+
+describe('Get valid JSON of all endpoints', () => {
+    test.only('200 : GET /api/ should return a list of all possible endpoints as a JSON with no error', () => {
+        jest.setTimeout(10000);
+        return request(app).get("/api")
+        .expect(200)
+        .then(({body})=>{
+            const jsonFile = body.readFile;
+            expect(isValidJson(jsonFile)).toBe(true);
+            expect(jsonFile).toContain("serves up a json representation of all the available endpoints of the api");
+            })
+        })
+    });
+    
 
 describe('POST commands', () => {
     test("POST to /api/reivews/:review_id/comments takes a username and body in the request, responding with the posted comment", () =>{
