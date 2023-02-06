@@ -14,13 +14,15 @@ Installation if done using the npm install command to install all dependencies
 
 $ npm install
 
-Altenatively to install core dependecies:
+Altenatively to install core dependecies individually:
 
     $ npm install express
 
     $ npm install dotenv
     
     $ npm install pg-format
+
+    $ npm install cors
 
 
 Check the minimum dependency requirements for full running. 
@@ -82,7 +84,7 @@ In addition, husky is a git hook that ensures all available tests pass prior to 
 
 ## Hosted at
 
-https://games-reviews-and-comments.onrender.com/
+https://games-reviews-and-comments.onrender.com/api
 
 Use appropriate endpoints listed in endpoints.json file to interact with api.
 
