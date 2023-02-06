@@ -4,7 +4,6 @@ const db  = require("../db/connection");
 const dataTest = require("../db/data/test-data/index")
 const seed = require("../db/seeds/seed")
 const { isValidJson, isValidJsonObject} = require("../db/seeds/utils");
-const fetchAPI = require("../models/app.model")
 
 
 beforeEach(() => {
@@ -128,16 +127,31 @@ describe('GET commands', () => {
 })
 
 describe('Get valid JSON of all endpoints', () => {
-    test('200 : GET /api/ should return a list of all possible endpoints as a JSON with no error', () => {
-        jest.setTimeout(10000);
-        return request(app).get("/api")
-        .expect(200)
-        .then(({body})=>{
-            const jsonFile = body.readFile;
-            expect(isValidJson(jsonFile)).toBe(true);
-            expect(jsonFile).toContain("serves up a json representation of all the available endpoints of the api");
-            })
-        })
+    test("Returns 'Status: 200' with a JSON endpoints object", () => {
+        return request(app).get('/api').expect(200)
+        .then(({ body }) => {
+            console.log(body, "test");
+            const endpoints = body.endpoints;
+            expect(typeof endpoints).toBe("object");
+            expect(Array.isArray(endpoints)).toBe(false);
+        });
+    })
+
+    test("Endpoints object contains keys for each endpoint in API", () => {
+        return request(app).get('/api').expect(200)
+        .then(({ body }) => {
+            const endpoints = body.endpoints;
+            expect(endpoints).toHaveProperty("GET /api");
+            expect(endpoints).toHaveProperty("GET /api/categories");
+            expect(endpoints).toHaveProperty("GET /api/reviews");
+            expect(endpoints).toHaveProperty("GET /api/reviews/:reviewId");
+            expect(endpoints).toHaveProperty("GET /api/reviews/:reviewid/comments");
+            expect(endpoints).toHaveProperty("GET /api/users");
+            expect(endpoints).toHaveProperty("PATCH /api/reviews/:reviewid");
+            expect(endpoints).toHaveProperty("POST /api/reviews/:reviewid/comments");
+            expect(endpoints).toHaveProperty("DELETE /api/comments/:commentid");
+        });
+    });
     });
     
 

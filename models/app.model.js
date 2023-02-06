@@ -7,10 +7,6 @@ const fetchCategories = () => {
     })
 }
 
-const fetchAPI = () =>{
-    return fsPromises.readFile('./endpoints.json', 'utf-8')
-}
-
 const fetchReviews = (categories, category, sort_by="created_at", order="desc") => {
     
     const acceptedCategories = categories.map((category)=>{
@@ -143,5 +139,4 @@ module.exports = {
         updateVotes, 
         writeComment, 
         removeComment,
-        fetchAPI
         }

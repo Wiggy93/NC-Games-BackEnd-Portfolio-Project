@@ -10,22 +10,12 @@ const {
     fetchAPI,
     } =   require("../models/app.model")
 
+const endpoints = require("../endpoints.json")
 
-
-const getApi = (request, response, next) =>{
-    return fetchAPI()
-    .then((data)=>{
-        //const jsonData = JSON.stringify(data);
-        //return jsonData;
-        return data
-    })
-    .then((readFile)=>{
-        console.log(readFile, "All endpoints");
-
-        response.status(200).send({readFile})
-    })
-    .catch((err)=>console.log(err))
+const getEndPoint = (request, response, next) => {
+    response.status(200).send({endpoints:endpoints})
 }
+
 
 const getCategory = (request, response, next) => {
     fetchCategories().then((categories) => {
@@ -130,7 +120,8 @@ const deleteComment =((request, response, next)=>{
 
 
 module.exports = {
-    getApi, 
+    // getApi,
+    getEndPoint, 
     getCategory, 
     getReviews, 
     getReviewById, 
