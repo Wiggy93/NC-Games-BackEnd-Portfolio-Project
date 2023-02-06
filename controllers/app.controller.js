@@ -9,17 +9,18 @@ const {
     removeComment,
     fetchAPI,
     } =   require("../models/app.model")
-// const fsPromises = require("fs/promises");
+
 
 
 const getApi = (request, response, next) =>{
     return fetchAPI()
     .then((data)=>{
-        const jsonData = JSON.stringify(data);
-        return jsonData;
+        //const jsonData = JSON.stringify(data);
+        //return jsonData;
+        return data
     })
     .then((readFile)=>{
-        console.log(readFile, "<<<,line 20");
+        console.log(readFile, "All endpoints");
 
         response.status(200).send({readFile})
     })
