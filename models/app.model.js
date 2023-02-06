@@ -8,7 +8,7 @@ const fetchCategories = () => {
 }
 
 const fetchAPI = () =>{
-    return fsPromises.readFile('/home/alex/northcoders/backend/NC-Games-BackEnd-Portfolio-Project/endpoints.json', 'utf-8')
+    return fsPromises.readFile('./endpoints.json', 'utf-8')
 }
 
 const fetchReviews = (categories, category, sort_by="created_at", order="desc") => {
