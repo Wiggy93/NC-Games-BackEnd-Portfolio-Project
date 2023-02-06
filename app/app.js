@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
 const {
     getCategory, getReviews, getReviewById, getComments, patchVotes, getUsers, addComments, deleteComment, getEndPoint} = require("../controllers/app.controller")
 const {customErrorHandler, stringInsteadOfNumber, notFound, missingFields, serverError} = require("./app.errors")
 
+app.use(cors());
 app.use(express.json());
 
 
