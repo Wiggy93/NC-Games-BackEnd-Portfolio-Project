@@ -7,7 +7,6 @@ const {
     fetchUsers ,
     writeComment,
     removeComment,
-    fetchAPI,
     } =   require("../models/app.model")
 
 const endpoints = require("../endpoints.json")
