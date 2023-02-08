@@ -130,7 +130,6 @@ describe('Get valid JSON of all endpoints', () => {
     test("Returns 'Status: 200' with a JSON endpoints object", () => {
         return request(app).get('/api').expect(200)
         .then(({ body }) => {
-            console.log(body, "test");
             const endpoints = body.endpoints;
             expect(typeof endpoints).toBe("object");
             expect(Array.isArray(endpoints)).toBe(false);
@@ -238,6 +237,59 @@ describe('PATCH commands', () => {
             .expect(200)
             .then(({body})=>{
                 expect(body.reviewObj[0].votes).toBe(10)
+            })
+        })
+    });
+
+    test('200: should update the votes value for a given comment id by increasing it by the indicated number of votes in a passed object ', () => {
+        return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes : 1})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedComment).toEqual(
+                {
+                    comment_id :1,
+                    body: "I loved this game too!", 
+                    author: "bainesface",
+                    review_id: 2,
+                    votes: 17,
+                    created_at: "2017-11-22T12:43:33.389Z",
+                  }
+            )
+        })
+    });
+
+    test('200: should update the votes value for a given comment id by descreasing it by the indicated number of votes in a passed object ', () => {
+        return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes : -5})
+        .expect(200)
+        .then(({body})=>{
+            expect(body.updatedComment).toEqual(
+                {
+                    comment_id :1,
+                    body: "I loved this game too!", 
+                    author: "bainesface",
+                    review_id: 2,
+                    votes: 11,
+                    created_at: "2017-11-22T12:43:33.389Z",
+                  }
+            )
+        })
+    });
+
+    test('should confirm that the updated comment has actually entered the database by using the getCommentById endpoint', () => {
+        return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes : 5})
+        .expect(200)
+        .then(()=>{
+            return request(app)
+            .get("/api/reviews/2/comments")
+            .expect(200)
+            .then(({body})=>{
+                expect(body.comments[1].votes).toBe(21)
             })
         })
     });
@@ -435,6 +487,35 @@ describe('Error handling', () => {
             })
         });
        
+        test('404 status, PATCH update comment votes to invalid comment id', () => {
+            return request(app)
+            .patch("/api/comments/99999999")
+            .send({ inc_votes : -100})
+            .expect(404)
+            .then(({body})=>{
+                expect(body.message).toEqual("comment id does not exist")
+            })
+        });
+    
+        test('400 status: PATCH update comment votes with empty object should return message', () => {
+            return request(app)
+            .patch("/api/comments/1")
+            .send({ })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual( "Missing required fields in comment (username and/or comment)")
+            })
+        });
+    
+        test('400 status: PATCH update comment votes with inc_votes as non-number datatype', () => {
+            return request(app)
+            .patch("/api/comments/1")
+            .send({inc_votes : "abc" })
+            .expect(400)
+            .then(({body})=>{
+                expect(body.message).toEqual( "Bad Request - expected a number and got text e.g. received three instead of 3")
+            })
+        });
 
     test('400: DELETE if comment_id isn\' valid datatype', () => {
         return request(app)

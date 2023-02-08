@@ -92,6 +92,24 @@ const updateVotes = ((reviewId, body)=>{
     })
 })
 
+const updateCommentVotes = ((commentId, body)=>{
+    const queryStr = 
+
+    `UPDATE comments 
+    SET votes = votes + $1
+    WHERE comment_id IN   
+    (SELECT comment_id FROM comments WHERE comment_id=$2)
+    RETURNING*;`
+
+    return db.query(queryStr, [body.inc_votes, commentId]).then((result)=>{
+        if (result.rowCount === 0) {
+            return Promise.reject({status : 404, message : "comment id does not exist"})
+        } else {
+            return result.rows[0]
+           }
+    })
+})
+
 const fetchUsers = (()=>{
     return db.query(`SELECT * FROM users`).then((result)=>{
         return result.rows
@@ -130,6 +148,8 @@ const removeComment = (commentId)=>{
     })
 }
 
+
+
 module.exports = {
         fetchCategories, 
         fetchReviews , 
@@ -139,4 +159,5 @@ module.exports = {
         updateVotes, 
         writeComment, 
         removeComment,
+        updateCommentVotes
         }

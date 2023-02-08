@@ -7,6 +7,7 @@ const {
     fetchUsers ,
     writeComment,
     removeComment,
+    updateCommentVotes
     } =   require("../models/app.model")
 
 const endpoints = require("../endpoints.json")
@@ -97,6 +98,18 @@ const patchVotes =((request, response,next)=>{
     })
 })
 
+const patchCommentVotes =((request, response, next)=>{
+    const body = request.body;
+    const {commentId} = request.params;
+
+    updateCommentVotes(commentId, body).then((updatedComment)=>{
+        response.status(200).send({updatedComment})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+})
+
 const getUsers = ((request, response)=>{   
     fetchUsers().then((allUsers)=>{
         response.status(200).send({allUsers})
@@ -128,4 +141,5 @@ module.exports = {
     patchVotes,
     getUsers ,
     addComments,
-    deleteComment }
+    deleteComment,
+    patchCommentVotes }
