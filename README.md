@@ -12,18 +12,7 @@ Clone the repo:
 
 Installation if done using the npm install command to install all dependencies
 
-$ npm install
-
-Altenatively to install core dependecies individually:
-
-    $ npm install express
-
-    $ npm install dotenv
-    
-    $ npm install pg-format
-
-    $ npm install cors
-
+    $ npm install
 
 Check the minimum dependency requirements for full running. 
 
