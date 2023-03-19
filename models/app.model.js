@@ -187,6 +187,27 @@ const fetchUserInfo = (username) => {
     });
 };
 
+const postCategory = (body) => {
+  if (body.slug === undefined || body.description === undefined) {
+    return Promise.reject({
+      status: 400,
+      message:
+        "Missing required fields in new category (slug and/or description)",
+    });
+  }
+
+  return db
+    .query(
+      `INSERT INTO categories (slug, description) VALUES ($1, $2)
+    
+    RETURNING*`,
+      [body.slug, body.description]
+    )
+    .then((result) => {
+      return result.rows;
+    });
+};
+
 module.exports = {
   fetchCategories,
   fetchReviews,
@@ -198,4 +219,5 @@ module.exports = {
   removeComment,
   updateCommentVotes,
   fetchUserInfo,
+  postCategory,
 };

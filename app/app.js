@@ -13,6 +13,7 @@ const {
   getEndPoint,
   patchCommentVotes,
   getUserInfo,
+  addCategory,
 } = require("../controllers/app.controller");
 
 const {
@@ -35,6 +36,7 @@ app.get("/api/users", getUsers);
 app.get("/api/users/:username", getUserInfo);
 
 app.post("/api/reviews/:reviewID/comments", addComments);
+app.post("/api/categories", addCategory);
 
 app.patch("/api/reviews/:reviewId", patchVotes);
 app.patch("/api/comments/:commentId", patchCommentVotes);

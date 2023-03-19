@@ -186,6 +186,46 @@ describe("POST commands", () => {
         expect(typeof newComment[0].created_at).toEqual("string");
       });
   });
+
+  test("201: POST  to /api/categories should return a new category object with teh submitted data", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({
+        slug: "Coooperative",
+        description: "Players must work together to meet the game objectives",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const newCategory = body.result[0];
+        expect(newCategory).toEqual({
+          slug: "Coooperative",
+          description: "Players must work together to meet the game objectives",
+        });
+      });
+  });
+
+  test("200: Post category should have been added to the database", () => {
+    return request(app)
+      .post("/api/categories")
+      .send({
+        slug: "Coooperative",
+        description: "Players must work together to meet the game objectives",
+      })
+      .expect(201)
+      .then(() => {
+        return request(app)
+          .get("/api/categories")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.categories).toHaveLength(5);
+            expect(body.categories[4]).toEqual({
+              slug: "Coooperative",
+              description:
+                "Players must work together to meet the game objectives",
+            });
+          });
+      });
+  });
 });
 
 describe("PATCH commands", () => {
@@ -564,6 +604,20 @@ describe("Error handling", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toEqual("Username Not Found");
+        });
+    });
+  });
+
+  describe("Post category errors", () => {
+    test("400: missing a required field", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Missing required fields in new category (slug and/or description)"
+          );
         });
     });
   });

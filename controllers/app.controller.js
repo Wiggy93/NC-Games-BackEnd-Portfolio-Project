@@ -9,6 +9,7 @@ const {
   removeComment,
   updateCommentVotes,
   fetchUserInfo,
+  postCategory,
 } = require("../models/app.model");
 
 const endpoints = require("../endpoints.json");
@@ -148,6 +149,19 @@ const getUserInfo = (request, response, next) => {
     });
 };
 
+const addCategory = (request, response, next) => {
+  const { body } = request;
+
+  postCategory(body)
+    .then((result) => {
+      response.status(201).send({ result });
+    })
+
+    .catch((err) => {
+      next(err);
+    });
+};
+
 module.exports = {
   // getApi,
   getEndPoint,
@@ -161,4 +175,5 @@ module.exports = {
   deleteComment,
   patchCommentVotes,
   getUserInfo,
+  addCategory,
 };
