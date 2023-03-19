@@ -558,7 +558,7 @@ describe("Error handling", () => {
   });
 
   describe("Get users/username errors", () => {
-    test.only("404: GET followed by invalid username should return a not found message", () => {
+    test("404: GET followed by invalid username should return a not found message", () => {
       return request(app)
         .get("/api/users/Alex")
         .expect(404)
