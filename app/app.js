@@ -22,6 +22,7 @@ const {
   notFound,
   missingFields,
   serverError,
+  notUniqueKey,
 } = require("./app.errors");
 
 app.use(cors());
@@ -51,6 +52,7 @@ app.all("*", (request, response) => {
 
 app.use(customErrorHandler);
 app.use(stringInsteadOfNumber);
+app.use(notUniqueKey);
 app.use(notFound);
 app.use(missingFields);
 app.use(serverError);

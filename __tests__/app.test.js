@@ -620,6 +620,21 @@ describe("Error handling", () => {
           );
         });
     });
+
+    test("slug names should be unique (primary key)", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({
+          slug: "euro game",
+          description: "Abstact games that involve little luck",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Category name already taken, must be unique"
+          );
+        });
+    });
   });
 });
 
