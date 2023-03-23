@@ -17,6 +17,16 @@ const stringInsteadOfNumber = (err, req, res, next) => {
   }
 };
 
+const notUniqueKey = (err, req, res, next) => {
+  if (err.code === "23505") {
+    res
+      .status(400)
+      .send({ message: "Category name already taken, must be unique" });
+  } else {
+    next(err);
+  }
+};
+
 const notFound = (err, req, res, next) => {
   if (err.code === "23503") {
     res.status(404).send({ message: "Not Found" });
@@ -46,4 +56,5 @@ module.exports = {
   notFound,
   missingFields,
   serverError,
+  notUniqueKey,
 };
