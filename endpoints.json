@@ -98,6 +98,20 @@
     }
   },
 
+  "GET /api/users/:username": {
+    "description": "serves an objecct containing a single object within an array with the user information",
+    "queries": "none",
+    "exampleResponse": {
+      "user": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  },
+
   "PATCH /api/reviews/:reviewid": {
     "description": "accepts a body which updates the number of votes for a given review_id by the indicated newVote value. Accepts positive and negative increments",
     "required input format": "{inc_votes: newVoteIncrement}",
